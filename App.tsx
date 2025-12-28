@@ -1,20 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "@/global.css";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./src/lib/query";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import HomePage from "./src/components/pages/common/HomePage";
+import CategoryPage from "./src/components/pages/common/CategoryPage";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <GluestackUIProvider mode="light">
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="home" component={HomePage} />
+              <Stack.Screen name="category" component={CategoryPage} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </GluestackUIProvider>
+    </QueryClientProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
