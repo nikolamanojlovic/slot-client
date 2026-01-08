@@ -5,7 +5,7 @@ import type {
   SignInRequest,
   SignUpRequest,
 } from "../types/api/auth/auth.interface";
-import { signIn, signUp } from "../types/api/auth/auth.function";
+import { getMe, signIn, signUp } from "../types/api/auth/auth.function";
 
 export const useAuth = () => {
   const signInMutation = useMutation<
@@ -14,6 +14,9 @@ export const useAuth = () => {
     SignInRequest
   >({
     mutationFn: signIn,
+    onSuccess: async () => {
+      await getMe();
+    },
   });
 
   const signUpMutation = useMutation<

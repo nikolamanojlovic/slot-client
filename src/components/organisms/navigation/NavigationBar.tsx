@@ -3,13 +3,7 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { useAppNavigation } from "@/src/hooks/useAppNavigation";
 import { useNavigationState } from "@react-navigation/native";
-import {
-  CalendarDays,
-  ListTree,
-  MessageCircle,
-  Store,
-  User,
-} from "lucide-react";
+import { CalendarDays, MessageCircle, Search, Store, User } from "lucide-react";
 import { Pressable } from "react-native";
 
 const NavigationBar = () => {
@@ -19,8 +13,6 @@ const NavigationBar = () => {
   const currentRoute = useNavigationState(
     (state) => state.routes[state.index].name
   );
-
-  console.log(currentRoute);
 
   return (
     <Box className="w-full position-fixed bottom-0 min-h-[50px] align-items-center bg-black text-white">
@@ -39,7 +31,7 @@ const NavigationBar = () => {
           }`}
           onPress={() => navigation.navigate("category")}
         >
-          <Icon as={ListTree} size="xl" />
+          <Icon as={Search} size="xl" />
         </Pressable>
         <Pressable className="flex-1 flex items-center justify-center">
           <Icon as={CalendarDays} size="xl" />
@@ -47,7 +39,12 @@ const NavigationBar = () => {
         <Pressable className="flex-1 flex items-center justify-center">
           <Icon as={MessageCircle} size="xl" />
         </Pressable>
-        <Pressable className="flex-1 flex items-center justify-center">
+        <Pressable
+          className={`flex-1 flex items-center justify-center ${
+            currentRoute === "profile" ? styleActive : ""
+          }`}
+          onPress={() => navigation.navigate("profile")}
+        >
           <Icon as={User} size="xl" />
         </Pressable>
       </HStack>

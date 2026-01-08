@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomePage from "./src/components/pages/common/HomePage";
 import CategoryPage from "./src/components/pages/common/CategoryPage";
+import AuthenticationPage from "./src/components/pages/common/AuthenticationPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ export default function App() {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               <Stack.Screen name="home" component={HomePage} />
               <Stack.Screen name="category" component={CategoryPage} />
+              <Stack.Screen name="profile" component={AuthenticationPage} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>

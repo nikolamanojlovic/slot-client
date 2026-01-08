@@ -1,22 +1,19 @@
-import AnonymousCallout from "../../organisms/callouts/AnonymousCallout";
-import React, { useState } from "react";
-import AnonymousHeader from "../../organisms/headers/AnonymousHeader";
-import { AuthActionSheet } from "../../organisms/forms/auth/AuthActionSheet";
+import React from "react";
 import { View } from "react-native";
 import BasicLayout from "../BasicLayout";
+import { VStack } from "@/components/ui/vstack";
+import { Heading } from "@/components/ui/heading";
 
 const HomePage = () => {
-  const [isAuthSheetOpen, setIsAuthSheetOpen] = useState(false);
 
   return (
     <BasicLayout>
-      <View className="flex-1">
-        <AnonymousHeader setIsAuthSheetOpen={setIsAuthSheetOpen} />
-        <AnonymousCallout />
-        <AuthActionSheet
-          isAuthSheetOpen={isAuthSheetOpen}
-          setIsAuthSheetOpen={setIsAuthSheetOpen}
-        />
+      <View className="flex-1 pr-3 pl-3">
+        <VStack>
+          <Heading size="2xl" className="text-left underline mt-3 mb-3">
+            Discover
+          </Heading>
+        </VStack>
       </View>
     </BasicLayout>
   );
