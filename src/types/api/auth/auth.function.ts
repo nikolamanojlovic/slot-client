@@ -1,7 +1,11 @@
 import { AuthError, Session } from "@supabase/supabase-js";
 import api from "../../../lib/axios";
 import { supabase } from "../../../lib/supabase";
-import type { SignInRequest, SignUpRequest } from "./auth.interface";
+import type {
+  SignInRequest,
+  SignInResponse,
+  SignUpRequest,
+} from "./auth.interface";
 
 export const signUp = async (data: SignUpRequest): Promise<void> => {
   await api.post("/auth/signup", {
@@ -17,8 +21,12 @@ export const signIn = async (data: SignInRequest): Promise<unknown> => {
   return await supabase.auth.signInWithPassword(data);
 };
 
-export const getMe = async (): Promise<void> => {
-  await api.get("/users/me");
+export const signOut = async (): Promise<unknown> => {
+  return await supabase.auth.signOut();
+};
+
+export const getMe = async (): Promise<SignInResponse> => {
+  return await api.get("/users/me");
 };
 
 export const getSession = async (): Promise<{

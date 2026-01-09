@@ -5,7 +5,7 @@ import type {
   SignInRequest,
   SignUpRequest,
 } from "../types/api/auth/auth.interface";
-import { getMe, signIn, signUp } from "../types/api/auth/auth.function";
+import { signIn, signOut, signUp } from "../types/api/auth/auth.function";
 
 export const useAuth = () => {
   const signInMutation = useMutation<
@@ -14,9 +14,6 @@ export const useAuth = () => {
     SignInRequest
   >({
     mutationFn: signIn,
-    onSuccess: async () => {
-      await getMe();
-    },
   });
 
   const signUpMutation = useMutation<
@@ -27,16 +24,25 @@ export const useAuth = () => {
     mutationFn: signUp,
   });
 
+  const signOutMutation = useMutation({
+    mutationFn: signOut,
+  });
+
   return {
     signUp: signUpMutation.mutate,
     signIn: signInMutation.mutate,
+    signOut: signOutMutation.mutate,
 
     isSigningUp: signUpMutation.isPending,
     isSigningIn: signInMutation.isPending,
+    isSigningOut: signOutMutation.isPending,
 
     signUpError: signUpMutation.error,
     signInError: signInMutation.error,
+    signOutError: signOutMutation.error,
 
     isSignedIn: signInMutation.isSuccess,
+    isSignedUp: signUpMutation.isSuccess,
+    isSignedOut: signOutMutation.isSuccess,
   };
 };
