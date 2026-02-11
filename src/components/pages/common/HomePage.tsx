@@ -10,13 +10,11 @@ const HomePage = () => {
 
   return (
     <BasicLayout>
-      <View className="flex-1 pr-3 pl-3">
-        <VStack>
-          <Heading size="2xl" className="text-left underline mt-3 mb-3">
-            {user ? "Hello, " + user.firstName : "Hello"}
-          </Heading>
-        </VStack>
-      </View>
+      <VStack>
+        <Heading size="2xl" className="text-left underline mt-3 mb-3">
+          {user ? "Hello, " + user.firstName : "Hello"}
+        </Heading>
+      </VStack>
     </BasicLayout>
   );
 };

@@ -12,27 +12,25 @@ const AuthenticationPage = () => {
 
   return (
     <BasicLayout>
-      <View className="flex-1 pr-3 pl-3">
-        <Heading size="2xl" className="text-left underline mt-3 mb-3">
-          {isSignUp ? "Sign Up" : "Sign In"}
-        </Heading>
-        {isSignUp ? <SignUpForm /> : <SignInForm />}
-        <Button
-          size="md"
-          variant="link"
-          onPress={() => setIsSignUp((prev) => !prev)}
-        >
-          {isSignUp ? (
-            <Text>
-              Already have an account? <u>Sign in.</u>
-            </Text>
-          ) : (
-            <Text>
-              Don't have an account? <u>Sign up.</u>
-            </Text>
-          )}
-        </Button>
-      </View>
+      <Heading size="2xl" className="text-left underline mt-3 mb-3">
+        {isSignUp ? "Sign Up" : "Sign In"}
+      </Heading>
+      {isSignUp ? <SignUpForm /> : <SignInForm />}
+      <Button
+        size="md"
+        variant="link"
+        onPress={() => setIsSignUp((prev) => !prev)}
+      >
+        {isSignUp ? (
+          <Text>
+            Already have an account? <u>Sign in.</u>
+          </Text>
+        ) : (
+          <Text>
+            Don't have an account? <u>Sign up.</u>
+          </Text>
+        )}
+      </Button>
     </BasicLayout>
   );
 };
