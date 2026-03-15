@@ -1,13 +1,13 @@
 import { View } from "react-native";
-import BasicLayout from "../BasicLayout";
+import BasicLayout from "../components/BasicLayout";
 import { useState } from "react";
-import { SignUpForm } from "../../organisms/forms/auth/SignUpForm";
-import { SignInForm } from "../../organisms/forms/auth/SignInForm";
+import { SignUpForm } from "../components/organisms/forms/auth/SignUpForm";
+import { SignInForm } from "../components/organisms/forms/auth/SignInForm";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 
-const AuthenticationPage = () => {
+const AuthenticationScreen = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
   return (
@@ -35,4 +35,4 @@ const AuthenticationPage = () => {
   );
 };
 
-export default AuthenticationPage;
+export default AuthenticationScreen;

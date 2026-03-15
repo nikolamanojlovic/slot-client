@@ -5,13 +5,13 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import HomePage from "./src/components/pages/common/HomePage";
-import ExplorePage from "./src/components/pages/common/ExplorePage";
-import AuthenticationPage from "./src/components/pages/common/AuthenticationPage";
+import HomeScreen from "./src/screens/HomeScreen";
+import ExploreScreen from "./src/screens/ExploreScreen";
+import AuthenticationScreen from "./src/screens/AuthenticationScreen";
 import { useAuthListener } from "./src/hooks/useAuthListener";
 import { useUserStore } from "./src/stores/useUserStore";
 import { View } from "react-native";
-import ProfilePage from "./src/components/pages/common/ProfilePage";
+import ProfileScreen from "./src/screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,12 +26,12 @@ export default function App() {
         <SafeAreaProvider>
           <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="home" component={HomePage} />
-              <Stack.Screen name="explore" component={ExplorePage} />
+              <Stack.Screen name="home" component={HomeScreen} />
+              <Stack.Screen name="explore" component={ExploreScreen} />
               {!!user ? (
-                <Stack.Screen name="profile" component={ProfilePage} />
+                <Stack.Screen name="profile" component={ProfileScreen} />
               ) : (
-                <Stack.Screen name="profile" component={AuthenticationPage} />
+                <Stack.Screen name="profile" component={AuthenticationScreen} />
               )}
             </Stack.Navigator>
           </NavigationContainer>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../../../hooks/useAuth";
+import { useAuth } from "../../../../queries/useAuth";
 import { UserRole } from "../../../../types/api/user/user.enum";
 import { TextInputChangeEvent } from "react-native";
 import { VStack } from "@/components/ui/vstack";

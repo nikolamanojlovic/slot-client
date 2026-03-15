@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import BasicLayout from "../BasicLayout";
+import BasicLayout from "../components/BasicLayout";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import {
@@ -13,9 +13,9 @@ import { VStack } from "@/components/ui/vstack";
 import { Pressable } from "@/components/ui/pressable";
 import { Icon } from "@/components/ui/icon";
 import { LogOut } from "lucide-react";
-import { useAuth } from "@/src/hooks/useAuth";
+import { useAuth } from "@/src/queries/useAuth";
 
-const ProfilePage = () => {
+const ProfileScreen = () => {
   const { signOut } = useAuth();
 
   const user = useUserStore((s) => s.user);
@@ -44,4 +44,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default ProfileScreen;

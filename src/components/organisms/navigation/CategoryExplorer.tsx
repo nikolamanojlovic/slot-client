@@ -3,7 +3,7 @@ import { Heading } from "@/components/ui/heading";
 import { Pressable } from "@/components/ui/pressable";
 import { Spinner } from "@/components/ui/spinner";
 import { Toast, ToastDescription, useToast } from "@/components/ui/toast";
-import { getCategoryTree } from "@/src/types/api/category/category.funtion";
+import { getCategoryTree } from "@/src/api/category";
 import {
   CategoryTreeResponse,
   SuperCategory,

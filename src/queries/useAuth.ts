@@ -5,7 +5,7 @@ import type {
   SignInRequest,
   SignUpRequest,
 } from "../types/api/auth/auth.interface";
-import { signIn, signOut, signUp } from "../types/api/auth/auth.function";
+import { signIn, signOut, signUp } from "../api/auth";
 
 export const useAuth = () => {
   const signInMutation = useMutation<

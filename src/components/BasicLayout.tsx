@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import NavigationBar from "../organisms/navigation/NavigationBar";
+import NavigationBar from "./organisms/navigation/NavigationBar";
 
 const BasicLayout = ({ children }: { children: React.ReactNode }) => {
   return (

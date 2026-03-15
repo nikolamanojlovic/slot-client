@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 import Constants from "expo-constants";
-import { getSession } from "../types/api/auth/auth.function";
+import { getSession } from "../api/auth";
 
 const api: AxiosInstance = axios.create({
   baseURL:

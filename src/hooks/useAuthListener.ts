@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useUserStore } from "../stores/useUserStore";
-import { getMe } from "../types/api/auth/auth.function";
+import { getMe } from "../api/auth";
 import { supabase } from "../lib/supabase";
 
 export const useAuthListener = () => {

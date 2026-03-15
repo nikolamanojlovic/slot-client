@@ -1,11 +1,11 @@
 import { AuthError, Session } from "@supabase/supabase-js";
-import api from "../../../lib/axios";
-import { supabase } from "../../../lib/supabase";
+import api from "../lib/axios";
+import { supabase } from "../lib/supabase";
 import type {
   SignInRequest,
   SignInResponse,
   SignUpRequest,
-} from "./auth.interface";
+} from "../types/api/auth/auth.interface";
 
 export const signUp = async (data: SignUpRequest): Promise<void> => {
   await api.post("/auth/signup", {

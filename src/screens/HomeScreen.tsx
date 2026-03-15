@@ -1,11 +1,11 @@
 import React from "react";
 import { View } from "react-native";
-import BasicLayout from "../BasicLayout";
+import BasicLayout from "../components/BasicLayout";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import { useUserStore } from "@/src/stores/useUserStore";
 
-const HomePage = () => {
+const HomeScreen = () => {
   const user = useUserStore((s) => s.user);
 
   return (
@@ -19,4 +19,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomeScreen;
