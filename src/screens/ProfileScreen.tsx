@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import BasicLayout from "../components/BasicLayout";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";

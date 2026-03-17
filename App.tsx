@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./src/screens/HomeScreen";
 import ExploreScreen from "./src/screens/ExploreScreen";
+import ExpertiseScreen from "./src/screens/ExpertiseScreen";
 import AuthenticationScreen from "./src/screens/AuthenticationScreen";
 import { useAuthListener } from "./src/hooks/useAuthListener";
 import { useUserStore } from "./src/stores/useUserStore";
@@ -28,6 +29,7 @@ export default function App() {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               <Stack.Screen name="home" component={HomeScreen} />
               <Stack.Screen name="explore" component={ExploreScreen} />
+              <Stack.Screen name="expertise" component={ExpertiseScreen} />
               {!!user ? (
                 <Stack.Screen name="profile" component={ProfileScreen} />
               ) : (

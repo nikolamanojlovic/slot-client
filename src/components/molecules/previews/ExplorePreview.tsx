@@ -3,6 +3,7 @@ import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { ExploreResponseItem } from "@/src/types/api/search/search.interface";
+import { useAppNavigation } from "@/src/hooks/useAppNavigation";
 import { H3 } from "@expo/html-elements";
 import { Pressable } from "react-native";
 
@@ -11,12 +12,16 @@ interface ExplorePreviewProps {
 }
 
 const ExplorePreview = ({ preview }: ExplorePreviewProps) => {
+  const navigation = useAppNavigation();
   const dummyImage =
     "https://media.gettyimages.com/id/652628318/photo/caffee-on-table-and-blured-cafe.jpg?s=612x612&w=gi&k=20&c=GjH2_Y3O41125DmnhK0Ecqq3P27MFT455hM8qtp-_zM=";
 
   return (
     <VStack className="w-full mt-3 mb-3">
-      <Pressable className="w-full">
+      <Pressable
+        className="w-full"
+        onPress={() => navigation.navigate("expertise", { tenantId: preview.tenantId })}
+      >
         <Image
           source={{ uri: dummyImage }}
           alt={preview.tenantName}
