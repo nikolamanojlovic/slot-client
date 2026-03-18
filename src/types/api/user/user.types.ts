@@ -1,3 +1,4 @@
+import { TenantResponse } from "../tenant/tenant.interface";
 import { UserRole } from "./user.enum";
 
 export interface UserDetails {
@@ -6,5 +7,5 @@ export interface UserDetails {
   lastName: string;
   email: string;
   role: UserRole;
-  tenant: string | null;
+  tenant: TenantResponse | null;
 }
