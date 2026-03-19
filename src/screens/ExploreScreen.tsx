@@ -39,7 +39,7 @@ const ExploreScreen = () => {
         {isLoading && (
           <Spinner className="flex-1 m-0" size="large" color="black" />
         )}
-        <ScrollView className="pt-6 pb-3">
+        <ScrollView className="flex-1 pt-6 pb-3">
           {data?.items &&
             data.items.map((item) => (
               <ExplorePreview key={item.tenantId} preview={item} />

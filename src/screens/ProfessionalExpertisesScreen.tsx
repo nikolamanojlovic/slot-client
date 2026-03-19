@@ -6,19 +6,33 @@ import { VStack } from "@/components/ui/vstack";
 import { HStack } from "@/components/ui/hstack";
 import { Badge, BadgeText } from "@/components/ui/badge";
 import { Fab, FabIcon } from "@/components/ui/fab";
-import { Plus } from "lucide-react";
+import {
+  Drawer,
+  DrawerBackdrop,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerCloseButton,
+} from "@/components/ui/drawer";
+import { Icon } from "@/components/ui/icon";
+import { Plus, X } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { ExpertiseResponse } from "@/src/types/api/expertise/expertise.interface";
-import { Category } from "@/src/types/api/category/category.interface";
+import { CategoryTreeResponse } from "@/src/types/api/category/category.interface";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/src/types/common/error.interface";
 import { getMyExpertises } from "@/src/api/expertise";
-import { getCategoryLeafs } from "@/src/api/category";
-import { useMemo } from "react";
+import { getCategoryTree } from "@/src/api/category";
+import { useMemo, useState } from "react";
+import { useUserStore } from "@/src/stores/useUserStore";
+import ProfessionalCreateExpertiseForm from "@/src/components/organisms/forms/expretise/ProfessionalCreateExpertiseForm";
 
 const ProfessionalExpertisesScreen = () => {
-  const { isLoading: isLoadingExpertise, data: expertiseData } = useQuery<
+  const user = useUserStore((s) => s.user);
+  const [showDrawer, setShowDrawer] = useState(false);
+
+  const { isLoading, data: expertiseData } = useQuery<
     ExpertiseResponse,
     AxiosError<ErrorResponse>
   >({
@@ -26,26 +40,22 @@ const ProfessionalExpertisesScreen = () => {
     queryFn: getMyExpertises,
   });
 
-  const uniqueCategoryIds = useMemo(() => {
-    if (!expertiseData) return [];
-    return [...new Set(expertiseData.content.flatMap((e) => e.categories))];
-  }, [expertiseData]);
-
-  const { isLoading: isLoadingCategories, data: categoriesData } = useQuery<
-    Category[],
+  const { data: categoryTreeData } = useQuery<
+    CategoryTreeResponse,
     AxiosError<ErrorResponse>
   >({
-    queryKey: ["categoryLeafs", uniqueCategoryIds],
-    queryFn: () => getCategoryLeafs(uniqueCategoryIds),
-    enabled: uniqueCategoryIds.length > 0,
+    queryKey: ["categories/tree"],
+    queryFn: getCategoryTree,
   });
 
   const categoryMap = useMemo(() => {
-    if (!categoriesData) return new Map<string, string>();
-    return new Map(categoriesData.map((c) => [c.id, c.name]));
-  }, [categoriesData]);
-
-  const isLoading = isLoadingExpertise || isLoadingCategories;
+    if (!categoryTreeData) return new Map<string, string>();
+    return new Map(
+      categoryTreeData.categories
+        .flatMap((sc) => sc.subcategories)
+        .map((c) => [c.id, c.name]),
+    );
+  }, [categoryTreeData]);
 
   return (
     <BasicLayout>
@@ -60,6 +70,7 @@ const ProfessionalExpertisesScreen = () => {
           size="md"
           placement="bottom right"
           className="mb-2 bg-black text-white"
+          onPress={() => setShowDrawer(true)}
         >
           <FabIcon as={Plus} />
         </Fab>
@@ -96,6 +107,33 @@ const ProfessionalExpertisesScreen = () => {
           </VStack>
         </ScrollView>
       </VStack>
+
+      <Drawer
+        isOpen={showDrawer}
+        onClose={() => setShowDrawer(false)}
+        anchor="bottom"
+        size="full"
+      >
+        <DrawerBackdrop />
+        <DrawerContent>
+          <DrawerHeader>
+            <Heading size="lg">Your new expertise</Heading>
+            <DrawerCloseButton>
+              <Icon as={X} size="md" />
+            </DrawerCloseButton>
+          </DrawerHeader>
+          <DrawerBody>
+            {user?.tenant?.id && user?.externalId && (
+              <ProfessionalCreateExpertiseForm
+                superCategories={categoryTreeData?.categories ?? []}
+                tenantId={user.tenant.id}
+                professionalId={user.externalId}
+                onClose={() => setShowDrawer(false)}
+              />
+            )}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </BasicLayout>
   );
 };

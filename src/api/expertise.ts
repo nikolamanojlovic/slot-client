@@ -14,3 +14,17 @@ export const getExpertise = async (tenantId: string): Promise<ExpertiseResponse>
   });
   return data;
 };
+
+export interface CreateExpertiseRequest {
+  tenantId: string;
+  name: string;
+  description: string;
+  duration: number;
+  capacity: number;
+  categories: string[];
+  professionals: string[];
+}
+
+export const createExpertise = async (body: CreateExpertiseRequest): Promise<void> => {
+  await api.post("/expertises", body);
+};
