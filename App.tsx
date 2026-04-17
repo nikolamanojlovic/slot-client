@@ -11,6 +11,7 @@ import ExploreScreen from "./src/screens/ExploreScreen";
 import ExpertiseScreen from "./src/screens/ExpertiseScreen";
 import ProfessionalExpertisesScreen from "./src/screens/ProfessionalExpertisesScreen";
 import AuthenticationScreen from "./src/screens/AuthenticationScreen";
+import CheckEmailScreen from "./src/screens/CheckEmailScreen";
 import { useAuthListener } from "./src/hooks/useAuthListener";
 import { useUserStore } from "./src/stores/useUserStore";
 import { View } from "react-native";
@@ -33,6 +34,7 @@ export default function App() {
               <Stack.Screen name="explore" component={ExploreScreen} />
               <Stack.Screen name="services" component={ProfessionalExpertisesScreen} />
               <Stack.Screen name="expertise" component={ExpertiseScreen} />
+              <Stack.Screen name="checkEmail" component={CheckEmailScreen} />
               {!!user ? (
                 <Stack.Screen name="profile" component={ProfileScreen} />
               ) : (

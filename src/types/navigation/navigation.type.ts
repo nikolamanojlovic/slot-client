@@ -4,4 +4,5 @@ export type RootStackParamList = {
   services: undefined;
   profile: undefined;
   expertise: { tenantId: string };
+  checkEmail: undefined;
 };

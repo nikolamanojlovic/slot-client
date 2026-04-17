@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useAuth } from "../../../../queries/useAuth";
 import { TextInputChangeEvent } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../../types/navigation/navigation.type";
 import { VStack } from "@/components/ui/vstack";
 import {
   FormControl,
@@ -12,6 +15,8 @@ import { Box } from "@/components/ui/box";
 
 export const SignInForm = () => {
   const { signIn } = useAuth();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [form, setForm] = useState({
     email: "",
@@ -29,10 +34,10 @@ export const SignInForm = () => {
   };
 
   const handleSubmit = async () => {
-    signIn({
-      email: form.email,
-      password: form.password,
-    });
+    signIn(
+      { email: form.email, password: form.password },
+      { onSuccess: () => navigation.navigate("home") }
+    );
   };
 
   return (

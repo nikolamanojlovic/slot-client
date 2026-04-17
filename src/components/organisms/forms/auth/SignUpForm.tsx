@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useAuth } from "../../../../queries/useAuth";
 import { UserRole } from "../../../../types/api/user/user.enum";
 import { TextInputChangeEvent } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../../types/navigation/navigation.type";
 import { VStack } from "@/components/ui/vstack";
 import {
   FormControl,
@@ -21,6 +24,8 @@ import { Button, ButtonText } from "@/components/ui/button";
 
 export const SignUpForm = () => {
   const { signUp } = useAuth();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [form, setForm] = useState({
     firstName: "",
@@ -46,13 +51,18 @@ export const SignUpForm = () => {
       return;
     }
 
-    signUp({
-      email: form.email,
-      password: form.password,
-      firstName: form.firstName,
-      lastName: form.lastName,
-      role: form.isProfessional ? UserRole.PROFESSIONAL : UserRole.CLIENT,
-    });
+    signUp(
+      {
+        email: form.email,
+        password: form.password,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        role: form.isProfessional ? UserRole.PROFESSIONAL : UserRole.CLIENT,
+      },
+      {
+        onSuccess: () => navigation.navigate("checkEmail"),
+      }
+    );
   };
 
   return (
