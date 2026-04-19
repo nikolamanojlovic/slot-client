@@ -23,8 +23,27 @@ export interface CreateExpertiseRequest {
   capacity: number;
   categories: string[];
   professionals: string[];
+  amount: number;
 }
 
 export const createExpertise = async (body: CreateExpertiseRequest): Promise<void> => {
   await api.post("/expertises", body);
+};
+
+export interface UpdateExpertiseRequest {
+  expertiseId: string;
+  name?: string;
+  description?: string;
+  duration?: number;
+  capacity?: number;
+  categories?: string[];
+  amount?: number;
+}
+
+export const updateExpertise = async ({ expertiseId, ...body }: UpdateExpertiseRequest): Promise<void> => {
+  await api.patch(`/expertises/${expertiseId}`, body);
+};
+
+export const deleteExpertise = async (expertiseId: string): Promise<void> => {
+  await api.delete(`/expertises/${expertiseId}`);
 };

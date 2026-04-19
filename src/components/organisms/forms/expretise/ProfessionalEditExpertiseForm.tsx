@@ -24,39 +24,45 @@ import { Pressable } from "react-native";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { createExpertise } from "@/src/api/expertise";
-import { useCategoryTree } from "@/src/hooks/useCategoryTree";
+import { Expertise } from "@/src/types/api/expertise/expertise.interface";
 import { ErrorResponse } from "@/src/types/common/error.interface";
+import { updateExpertise, deleteExpertise } from "@/src/api/expertise";
+import { useCategoryTree } from "@/src/hooks/useCategoryTree";
 
-interface ProfessionalCreateExpertiseFormProps {
-  tenantId: string;
-  professionalId: string;
+interface Props {
+  expertise: Expertise;
   onClose: () => void;
   onError: (error: AxiosError<ErrorResponse>) => void;
 }
 
-const ProfessionalCreateExpertiseForm = ({
-  tenantId,
-  professionalId,
+const ProfessionalEditExpertiseForm = ({
+  expertise,
   onClose,
   onError,
-}: ProfessionalCreateExpertiseFormProps) => {
+}: Props) => {
   const queryClient = useQueryClient();
   const { superCategories } = useCategoryTree();
 
+  const initialSuperCategoryId =
+    superCategories.find((sc) =>
+      sc.subcategories.some((c) => expertise.categories.includes(c.id)),
+    )?.id ?? null;
+
   const [form, setForm] = useState({
-    name: "",
-    description: "",
-    duration: "",
-    capacity: "",
-    amount: "",
+    name: expertise.name,
+    description: expertise.description,
+    duration: String(expertise.duration),
+    capacity: String(expertise.capacity),
+    amount: expertise.price ? String(expertise.price.amount) : "",
   });
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    expertise.categories,
+  );
   const [showSuperSheet, setShowSuperSheet] = useState(false);
   const [showSubSheet, setShowSubSheet] = useState(false);
   const [selectedSuperCategoryId, setSelectedSuperCategoryId] = useState<
     string | null
-  >(null);
+  >(initialSuperCategoryId);
 
   const selectedSuper = superCategories.find(
     (sc) => sc.id === selectedSuperCategoryId,
@@ -74,32 +80,38 @@ const ProfessionalCreateExpertiseForm = ({
         : `${selectedSubs[0].name} +${selectedSubs.length - 1}`;
 
   const mutation = useMutation({
-    mutationFn: createExpertise,
+    mutationFn: updateExpertise,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expertises/me"] });
-      resetForm();
       onClose();
     },
     onError,
   });
 
-  const resetForm = () => {
-    setForm({ name: "", description: "", duration: "", capacity: "", amount: "" });
-    setSelectedCategories([]);
-    setSelectedSuperCategoryId(null);
-  };
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteExpertise(expertise.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expertises/me"] });
+      onClose();
+    },
+    onError,
+  });
 
   const handleSubmit = () => {
-    mutation.mutate({
-      tenantId,
-      name: form.name,
-      description: form.description,
-      duration: parseInt(form.duration, 10),
-      capacity: parseInt(form.capacity, 10),
-      categories: selectedCategories,
-      professionals: [professionalId],
-      amount: parseFloat(form.amount),
-    });
+    const patch: Parameters<typeof updateExpertise>[0] = { expertiseId: expertise.id };
+
+    if (form.name !== expertise.name) patch.name = form.name;
+    if (form.description !== expertise.description) patch.description = form.description;
+    if (parseInt(form.duration, 10) !== expertise.duration) patch.duration = parseInt(form.duration, 10);
+    if (parseInt(form.capacity, 10) !== expertise.capacity) patch.capacity = parseInt(form.capacity, 10);
+    if (form.amount !== "" && parseFloat(form.amount) !== expertise.price?.amount) patch.amount = parseFloat(form.amount);
+
+    const categoriesChanged =
+      selectedCategories.length !== expertise.categories.length ||
+      selectedCategories.some((id) => !expertise.categories.includes(id));
+    if (categoriesChanged) patch.categories = selectedCategories;
+
+    mutation.mutate(patch);
   };
 
   const handleSelectSuper = (id: string) => {
@@ -248,6 +260,19 @@ const ProfessionalCreateExpertiseForm = ({
         )}
       </Button>
 
+      <Button
+        className="mt-1"
+        action="negative"
+        onPress={() => deleteMutation.mutate()}
+        isDisabled={deleteMutation.isPending}
+      >
+        {deleteMutation.isPending ? (
+          <Spinner size="small" color="white" />
+        ) : (
+          <ButtonText className="text-white">Delete</ButtonText>
+        )}
+      </Button>
+
       <Actionsheet
         isOpen={showSuperSheet}
         onClose={() => setShowSuperSheet(false)}
@@ -309,4 +334,4 @@ const ProfessionalCreateExpertiseForm = ({
   );
 };
 
-export default ProfessionalCreateExpertiseForm;
+export default ProfessionalEditExpertiseForm;

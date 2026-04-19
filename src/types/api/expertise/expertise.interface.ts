@@ -6,6 +6,12 @@ export interface Expertise {
   capacity: number;
   categories: string[];
   active: boolean;
+  price: Price | null;
+}
+
+export interface Price {
+  amount: number;
+  currency: string;
 }
 
 export interface ExpertiseResponse {

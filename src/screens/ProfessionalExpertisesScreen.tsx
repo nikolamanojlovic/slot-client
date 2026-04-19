@@ -3,32 +3,29 @@ import { Heading } from "@/components/ui/heading";
 import { Spinner } from "@/components/ui/spinner";
 import { VStack } from "@/components/ui/vstack";
 import { Fab, FabIcon } from "@/components/ui/fab";
-import {
-  Drawer,
-  DrawerBackdrop,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  DrawerCloseButton,
-} from "@/components/ui/drawer";
-import { Icon } from "@/components/ui/icon";
-import { Plus, X } from "lucide-react-native";
+import { Plus } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { ExpertiseResponse } from "@/src/types/api/expertise/expertise.interface";
-import { CategoryTreeResponse } from "@/src/types/api/category/category.interface";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/src/types/common/error.interface";
 import { getMyExpertises } from "@/src/api/expertise";
-import { getCategoryTree } from "@/src/api/category";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useCategoryTree } from "@/src/hooks/useCategoryTree";
 import { useUserStore } from "@/src/stores/useUserStore";
-import ProfessionalCreateExpertiseForm from "@/src/components/organisms/forms/expretise/ProfessionalCreateExpertiseForm";
+import { Expertise } from "@/src/types/api/expertise/expertise.interface";
 import ProfessionalExpertiseItem from "@/src/components/molecules/ProfessionalExpertiseItem";
+import ProfessionalCreateExpertiseFormDrawer from "@/src/components/organisms/drawers/ProfessionalCreateExpertiseFormDrawer";
+import ProfessionalEditExpertiseFormDrawer from "@/src/components/organisms/drawers/ProfessionalEditExpertiseFormDrawer";
+import { useErrorToast } from "@/src/hooks/useErrorToast";
 
 const ProfessionalExpertisesScreen = () => {
   const user = useUserStore((s) => s.user);
   const [showDrawer, setShowDrawer] = useState(false);
+  const [editExpertise, setEditExpertise] = useState<Expertise | null>(null);
+
+  const { categoryMap } = useCategoryTree();
+  const { showError } = useErrorToast();
 
   const { isLoading, data: expertiseData } = useQuery<
     ExpertiseResponse,
@@ -37,23 +34,6 @@ const ProfessionalExpertisesScreen = () => {
     queryKey: ["expertises/me"],
     queryFn: getMyExpertises,
   });
-
-  const { data: categoryTreeData } = useQuery<
-    CategoryTreeResponse,
-    AxiosError<ErrorResponse>
-  >({
-    queryKey: ["categories/tree"],
-    queryFn: getCategoryTree,
-  });
-
-  const categoryMap = useMemo(() => {
-    if (!categoryTreeData) return new Map<string, string>();
-    return new Map(
-      categoryTreeData.categories
-        .flatMap((sc) => sc.subcategories)
-        .map((c) => [c.id, c.name]),
-    );
-  }, [categoryTreeData]);
 
   return (
     <BasicLayout>
@@ -78,40 +58,31 @@ const ProfessionalExpertisesScreen = () => {
                 key={expertise.id}
                 expertise={expertise}
                 categoryMap={categoryMap}
+                onPress={() => setEditExpertise(expertise)}
               />
             ))}
           </VStack>
         </ScrollView>
       </VStack>
 
-      <Drawer
-        isOpen={showDrawer}
-        onClose={() => setShowDrawer(false)}
-        anchor="bottom"
-        size="full"
-      >
-        <DrawerBackdrop />
-        <DrawerContent>
-          <DrawerHeader>
-            <Heading size="lg" className="text-primary-500">
-              Add expertise
-            </Heading>
-            <DrawerCloseButton>
-              <Icon as={X} size="md" color="#06392F" />
-            </DrawerCloseButton>
-          </DrawerHeader>
-          <DrawerBody>
-            {user?.tenant?.id && user?.externalId && (
-              <ProfessionalCreateExpertiseForm
-                superCategories={categoryTreeData?.categories ?? []}
-                tenantId={user.tenant.id}
-                professionalId={user.externalId}
-                onClose={() => setShowDrawer(false)}
-              />
-            )}
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+      {user?.tenant?.id && user?.externalId && (
+        <ProfessionalCreateExpertiseFormDrawer
+          isOpen={showDrawer}
+          onClose={() => setShowDrawer(false)}
+          onError={showError}
+          tenantId={user.tenant.id}
+          professionalId={user.externalId}
+        />
+      )}
+
+      {editExpertise && (
+        <ProfessionalEditExpertiseFormDrawer
+          isOpen={!!editExpertise}
+          onClose={() => setEditExpertise(null)}
+          onError={showError}
+          expertise={editExpertise}
+        />
+      )}
     </BasicLayout>
   );
 };
