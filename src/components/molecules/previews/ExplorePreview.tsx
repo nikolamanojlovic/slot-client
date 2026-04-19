@@ -1,4 +1,3 @@
-import { HStack } from "@/components/ui/hstack";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
@@ -6,6 +5,9 @@ import { ExploreResponseItem } from "@/src/types/api/search/search.interface";
 import { useAppNavigation } from "@/src/hooks/useAppNavigation";
 import { H3 } from "@expo/html-elements";
 import { Pressable } from "react-native";
+import { colors } from "@/src/constants/colors";
+import { cardStyle } from "@/src/constants/styles";
+import ExplorePreviewExpertiseItem from "@/src/components/molecules/previews/ExplorePreviewExpertiseItem";
 
 interface ExplorePreviewProps {
   preview: ExploreResponseItem;
@@ -14,44 +16,36 @@ interface ExplorePreviewProps {
 const ExplorePreview = ({ preview }: ExplorePreviewProps) => {
   const navigation = useAppNavigation();
   const dummyImage =
-    "https://media.gettyimages.com/id/652628318/photo/caffee-on-table-and-blured-cafe.jpg?s=612x612&w=gi&k=20&c=GjH2_Y3O41125DmnhK0Ecqq3P27MFT455hM8qtp-_zM=";
+    "https://img.freepik.com/free-photo/strong-man-training-gym_1303-23478.jpg?semt=ais_hybrid&w=740&q=80";
 
   return (
-    <VStack className="w-full mt-3 mb-3">
-      <Pressable
-        className="w-full"
-        onPress={() => navigation.navigate("expertise", { tenantId: preview.tenantId })}
-      >
-        <Image
-          source={{ uri: dummyImage }}
-          alt={preview.tenantName}
-          className="w-full h-[100px]"
-        />
-        <VStack className="items-start">
-          <H3 className="m-0 mt-3">{preview.tenantName}</H3>
-        </VStack>
-      </Pressable>
-      {preview.expertises?.length ? (
-        preview.expertises?.map((exp) => (
-          <HStack key={exp.id} className="mt-2 mb-2 p-2 bg-gray-200">
-            <VStack>
-              <Text size="sm" bold>
-                {exp.name}
-              </Text>
-              <Text size="xs">{`${exp.duration} min | ${exp.capacity} ppl`}</Text>
-            </VStack>
-          </HStack>
-        ))
-      ) : (
-        <HStack key={Date.now()} className="mt-2 mb-2 p-2 bg-gray-200">
-          <VStack>
-            <Text size="sm" bold>
-              No expertises
-            </Text>
-          </VStack>
-        </HStack>
-      )}
-    </VStack>
+    <Pressable
+      onPress={() =>
+        navigation.navigate("tenant", { tenantId: preview.tenantId })
+      }
+      style={cardStyle}
+      className="rounded-md overflow-hidden mb-3 mx-1"
+    >
+      <Image
+        source={{ uri: dummyImage }}
+        alt={preview.tenantName}
+        className="w-full h-[120px]"
+      />
+      <VStack className="p-3" space="sm">
+        <H3 className="m-0" style={{ color: colors.primary }}>
+          {preview.tenantName}
+        </H3>
+        {preview.expertises?.length ? (
+          preview.expertises.map((exp) => (
+            <ExplorePreviewExpertiseItem key={exp.id} expertise={exp} />
+          ))
+        ) : (
+          <Text size="sm" className="text-typography-400">
+            No expertises
+          </Text>
+        )}
+      </VStack>
+    </Pressable>
   );
 };
 

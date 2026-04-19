@@ -6,6 +6,7 @@ import { Badge, BadgeText } from "@/components/ui/badge";
 import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
 import type { Expertise } from "@/src/types/api/expertise/expertise.interface";
 import { colors } from "@/src/constants/colors";
+import { cardStyle } from "@/src/constants/styles";
 import PriceLabel from "@/src/components/atoms/PriceLabel";
 import { CircleAlert } from "lucide-react-native";
 
@@ -20,14 +21,7 @@ const ProfessionalExpertiseItem = ({ expertise, categoryMap, onPress }: Props) =
   <HStack
     space="md"
     className="items-center justify-between p-3 rounded-md"
-    style={{
-      backgroundColor: colors.white,
-      shadowColor: colors.primary,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.4,
-      shadowRadius: 6,
-      elevation: 4,
-    }}
+    style={cardStyle}
   >
     <VStack space="xs" className="flex-1">
       <Alert

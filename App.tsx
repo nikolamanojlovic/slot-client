@@ -8,7 +8,7 @@ import { RootStackParamList } from "./src/types/navigation/navigation.type";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./src/screens/HomeScreen";
 import ExploreScreen from "./src/screens/ExploreScreen";
-import ExpertiseScreen from "./src/screens/ExpertiseScreen";
+import TenantScreen from "./src/screens/TenantScreen";
 import ProfessionalExpertisesScreen from "./src/screens/ProfessionalExpertisesScreen";
 import AuthenticationScreen from "./src/screens/AuthenticationScreen";
 import CheckEmailScreen from "./src/screens/CheckEmailScreen";
@@ -35,7 +35,7 @@ export default function App() {
                 name="professional-expertises"
                 component={ProfessionalExpertisesScreen}
               />
-              <Stack.Screen name="expertise" component={ExpertiseScreen} />
+              <Stack.Screen name="tenant" component={TenantScreen} />
               <Stack.Screen name="checkEmail" component={CheckEmailScreen} />
               {!!user ? (
                 <Stack.Screen name="profile" component={ProfileScreen} />

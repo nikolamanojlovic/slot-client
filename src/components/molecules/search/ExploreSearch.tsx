@@ -1,5 +1,7 @@
 import { HStack } from "@/components/ui/hstack";
-import { Input, InputField } from "@/components/ui/input";
+import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
+import { SearchIcon } from "@/components/ui/icon";
+import { colors } from "@/src/constants/colors";
 
 interface ExploreSearchProps {
   query?: string;
@@ -13,8 +15,11 @@ const ExploreSearch = ({ query, setQuery }: ExploreSearchProps) => {
   };
 
   return (
-    <HStack className="w-full">
-      <Input className="flex-1" variant="underlined" size="md">
+    <HStack className="w-full mb-2">
+      <Input className="flex-1" size="md">
+        <InputSlot className="pl-3">
+          <InputIcon as={SearchIcon} color={colors.primary} />
+        </InputSlot>
         <InputField
           placeholder="Search for categories and businesses"
           value={query}

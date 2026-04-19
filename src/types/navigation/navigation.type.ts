@@ -3,6 +3,6 @@ export type RootStackParamList = {
   explore: undefined;
   'professional-expertises': undefined;
   profile: undefined;
-  expertise: { tenantId: string };
+  tenant: { tenantId: string };
   checkEmail: undefined;
 };

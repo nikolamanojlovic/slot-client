@@ -5,6 +5,7 @@ export interface ExploreResponseItemList {
   duration: number;
   capacity: number;
   categories: string[];
+  price: { amount: number; currency: string } | null;
 }
 
 export interface ExploreResponseItem {
