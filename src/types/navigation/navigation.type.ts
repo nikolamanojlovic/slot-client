@@ -1,7 +1,7 @@
 export type RootStackParamList = {
   home: undefined;
   explore: undefined;
-  services: undefined;
+  'professional-expertises': undefined;
   profile: undefined;
   expertise: { tenantId: string };
   checkEmail: undefined;

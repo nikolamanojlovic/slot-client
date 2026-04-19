@@ -2,6 +2,12 @@ import { useEffect } from "react";
 import { useUserStore } from "../stores/useUserStore";
 import { getMe } from "../api/auth";
 import { supabase } from "../lib/supabase";
+import type { Session } from "@supabase/supabase-js";
+
+const isSessionExpired = (session: Session): boolean => {
+  const nowInSeconds = Math.floor(Date.now() / 1000);
+  return session.expires_at !== undefined && session.expires_at < nowInSeconds;
+};
 
 export const useAuthListener = () => {
   const setUser = useUserStore((s) => s.setUser);
@@ -9,7 +15,15 @@ export const useAuthListener = () => {
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, _session) => {
+      (event, session) => {
+        if (event === "INITIAL_SESSION") {
+          if (!session || isSessionExpired(session)) {
+            supabase.auth.signOut();
+            clearAuth();
+            return;
+          }
+        }
+
         switch (event) {
           case "INITIAL_SESSION":
           case "SIGNED_IN":
@@ -25,13 +39,12 @@ export const useAuthListener = () => {
               });
             break;
           case "SIGNED_OUT":
-            console.log("User deleted");
             clearAuth();
             break;
           default:
             break;
         }
-      }
+      },
     );
 
     return () => listener.subscription.unsubscribe();

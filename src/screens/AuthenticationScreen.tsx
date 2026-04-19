@@ -1,10 +1,9 @@
-import { View } from "react-native";
 import BasicLayout from "../components/BasicLayout";
 import { useState } from "react";
 import { SignUpForm } from "../components/organisms/forms/auth/SignUpForm";
 import { SignInForm } from "../components/organisms/forms/auth/SignInForm";
 import { Heading } from "@/components/ui/heading";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 
 const AuthenticationScreen = () => {
@@ -12,24 +11,20 @@ const AuthenticationScreen = () => {
 
   return (
     <BasicLayout>
-      <Heading size="2xl" className="text-left underline mt-3 mb-3">
+      <Heading size="2xl" className="text-left text-primary-500 mt-3 mb-3">
         {isSignUp ? "Sign Up" : "Sign In"}
       </Heading>
       {isSignUp ? <SignUpForm /> : <SignInForm />}
       <Button
         size="md"
         variant="link"
+        className="gap-0"
         onPress={() => setIsSignUp((prev) => !prev)}
       >
-        {isSignUp ? (
-          <Text>
-            Already have an account? <u>Sign in.</u>
-          </Text>
-        ) : (
-          <Text>
-            Don't have an account? <u>Sign up.</u>
-          </Text>
-        )}
+        <Text>
+          {isSignUp ? "Already have an account? " : "Don't have an account? "}
+        </Text>
+        <ButtonText>{isSignUp ? "Sign in." : "Sign up."}</ButtonText>
       </Button>
     </BasicLayout>
   );

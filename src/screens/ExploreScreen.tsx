@@ -31,7 +31,7 @@ const ExploreScreen = () => {
     <BasicLayout>
       <VStack className="h-full mb-3">
         <HStack className="w-full justify-between">
-          <Heading size="2xl" className="text-left underline mt-3 mb-3">
+          <Heading size="2xl" className="text-left text-primary-500 mt-3 mb-3">
             Explore
           </Heading>
         </HStack>

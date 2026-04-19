@@ -21,7 +21,7 @@ const ProfileScreen = () => {
 
   return (
     <BasicLayout>
-      <Heading size="2xl" className="text-left underline mt-3 mb-3">
+      <Heading size="2xl" className="text-left text-primary-500 mt-3 mb-3">
         Profile
       </Heading>
       <HStack className="w-full justify-between">

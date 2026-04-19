@@ -18,7 +18,9 @@ export const signUp = async (data: SignUpRequest): Promise<void> => {
 };
 
 export const signIn = async (data: SignInRequest): Promise<unknown> => {
-  return await supabase.auth.signInWithPassword(data);
+  const { data: result, error } = await supabase.auth.signInWithPassword(data);
+  if (error) throw error;
+  return result;
 };
 
 export const signOut = async (): Promise<unknown> => {

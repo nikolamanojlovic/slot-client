@@ -12,55 +12,76 @@ import {
   User,
   UserX,
 } from "lucide-react";
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
+
+const ACTIVE_COLOR = "#06392F";
+
+const NavItem = ({
+  active,
+  onPress,
+  children,
+}: {
+  active?: boolean;
+  onPress?: () => void;
+  children: React.ReactNode;
+}) => (
+  <Pressable
+    className="flex-1 flex items-center justify-center"
+    onPress={onPress}
+  >
+    <View
+      style={{
+        position: "absolute",
+        top: -2,
+        left: 0,
+        right: 0,
+        height: 2,
+        backgroundColor: active ? ACTIVE_COLOR : "transparent",
+      }}
+    />
+    {children}
+  </Pressable>
+);
 
 const NavigationBar = () => {
-  const styleActive = "bg-gray-500";
-
   const navigation = useAppNavigation();
   const currentRoute = useNavigationState(
-    (state) => state.routes[state.index].name
+    (state) => state.routes[state.index].name,
   );
 
   const user = useUserStore((s) => s.user);
 
   return (
-    <Box className="w-full position-fixed bottom-0 min-h-[50px] align-items-center bg-black text-white">
+    <Box className="w-full position-fixed bottom-0 min-h-[50px] align-items-center bg-transparent">
       <HStack className="w-full h-full">
-        <Pressable
-          className={`flex-1 flex items-center justify-center ${
-            currentRoute === "home" ? styleActive : ""
-          }`}
+        <NavItem
+          active={currentRoute === "home"}
           onPress={() => navigation.navigate("home")}
         >
-          <Icon as={Store} size="xl" />
-        </Pressable>
-        <Pressable
-          className={`flex-1 flex items-center justify-center ${
-            currentRoute === "explore" ? styleActive : ""
-          }`}
+          <Icon as={Store} size="xl" color="#06392F" />
+        </NavItem>
+        <NavItem
+          active={currentRoute === "explore"}
           onPress={() => navigation.navigate("explore")}
         >
-          <Icon as={Search} size="xl" />
-        </Pressable>
-        <Pressable className="flex-1 flex items-center justify-center">
-          <Icon as={CalendarDays} size="xl" />
-        </Pressable>
-        <Pressable className="flex-1 flex items-center justify-center">
-          <Icon as={MessageCircle} size="xl" />
-        </Pressable>
-        <Pressable
-          className={`flex-1 flex items-center justify-center ${
-            currentRoute === "profile" ? styleActive : ""
-          }`}
+          <Icon as={Search} size="xl" color="#06392F" />
+        </NavItem>
+        <NavItem>
+          <Icon as={CalendarDays} size="xl" color="#06392F" />
+        </NavItem>
+        <NavItem>
+          <Icon as={MessageCircle} size="xl" color="#06392F" />
+        </NavItem>
+        <NavItem
+          active={currentRoute === "profile"}
           onPress={() => navigation.navigate("profile")}
         >
           {!!user ? (
-            <Icon as={User} size="xl" />
+            <Icon as={User} size="xl" color="#06392F" />
           ) : (
-            <Icon as={UserX} size="xl" />
+            <Icon as={UserX} size="xl" color="#06392F" />
           )}
-        </Pressable>
+        </NavItem>
       </HStack>
     </Box>
   );

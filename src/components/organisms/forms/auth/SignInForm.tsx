@@ -8,46 +8,50 @@ import { VStack } from "@/components/ui/vstack";
 import {
   FormControl,
   FormControlLabelText,
+  FormControlError,
+  FormControlErrorText,
 } from "@/components/ui/form-control";
 import { Input, InputField } from "@/components/ui/input";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
+import { Text } from "@/components/ui/text";
 
 export const SignInForm = () => {
-  const { signIn } = useAuth();
+  const { signIn, signInError, isSigningIn } = useAuth();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
-  const handleChangeText = (
-    key: keyof typeof form,
-    value: string | boolean
-  ) => {
-    setForm((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+  const handleChangeText = (key: keyof typeof form, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const handleSubmit = async () => {
+  const validate = () => {
+    const newErrors = { email: "", password: "" };
+    if (!form.email.trim()) newErrors.email = "Email is required";
+    if (!form.password.trim()) newErrors.password = "Password is required";
+    setErrors(newErrors);
+    return !newErrors.email && !newErrors.password;
+  };
+
+  const handleSubmit = () => {
+    if (!validate()) return;
     signIn(
       { email: form.email, password: form.password },
-      { onSuccess: () => navigation.navigate("home") }
+      { onSuccess: () => navigation.navigate("home") },
     );
   };
 
   return (
     <VStack className="w-full">
-      <FormControl size="md">
+      <FormControl size="md" isInvalid={!!errors.email}>
         <Box className="mb-3">
           <FormControlLabelText className="mb-2">Email</FormControlLabelText>
           <Input className="w-full" size="md">
             <InputField
-              id="sign-up-email"
               value={form.email}
               onChange={(val: TextInputChangeEvent) =>
                 handleChangeText("email", val.nativeEvent.text)
@@ -57,12 +61,18 @@ export const SignInForm = () => {
               autoCorrect={false}
             />
           </Input>
+          {!!errors.email && (
+            <FormControlError>
+              <FormControlErrorText>{errors.email}</FormControlErrorText>
+            </FormControlError>
+          )}
         </Box>
+      </FormControl>
+      <FormControl size="md" isInvalid={!!errors.password}>
         <Box className="mb-5">
           <FormControlLabelText className="mb-2">Password</FormControlLabelText>
           <Input className="w-full" size="md">
             <InputField
-              id="sign-up-password"
               value={form.password}
               type="password"
               onChange={(val: TextInputChangeEvent) =>
@@ -71,10 +81,24 @@ export const SignInForm = () => {
               autoCorrect={false}
             />
           </Input>
+          {!!errors.password && (
+            <FormControlError>
+              <FormControlErrorText>{errors.password}</FormControlErrorText>
+            </FormControlError>
+          )}
         </Box>
       </FormControl>
-      <Button className="w-full" onPress={handleSubmit}>
-        <ButtonText>Sign In</ButtonText>
+      {!!signInError && (
+        <Text className="text-error-600 text-sm mb-3">
+          {(signInError as any)?.message ?? "Sign in failed. Please try again."}
+        </Text>
+      )}
+      <Button
+        className="w-full"
+        onPress={handleSubmit}
+        isDisabled={isSigningIn}
+      >
+        <ButtonText>{isSigningIn ? "Signing in..." : "Sign In"}</ButtonText>
       </Button>
     </VStack>
   );

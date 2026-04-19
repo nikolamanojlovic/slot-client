@@ -59,13 +59,15 @@ const ProfessionalCreateExpertiseForm = ({
   );
   const subcategories = selectedSuper?.subcategories ?? [];
 
+  const selectedSubs = subcategories.filter((c) =>
+    selectedCategories.includes(c.id),
+  );
   const subLabel =
-    selectedCategories.length === 0
+    selectedSubs.length === 0
       ? "Select subcategory"
-      : subcategories
-          .filter((c) => selectedCategories.includes(c.id))
-          .map((c) => c.name)
-          .join(", ");
+      : selectedSubs.length === 1
+        ? selectedSubs[0].name
+        : `${selectedSubs[0].name} +${selectedSubs.length - 1}`;
 
   const mutation = useMutation({
     mutationFn: createExpertise,
@@ -181,6 +183,7 @@ const ProfessionalCreateExpertiseForm = ({
                 : "text-typography-500 flex-1 mr-2"
             }
             numberOfLines={1}
+            ellipsizeMode="tail"
           >
             {selectedSuper?.name ?? "Select category"}
           </Text>
@@ -205,6 +208,7 @@ const ProfessionalCreateExpertiseForm = ({
                 : "text-typography-500 flex-1 mr-2"
             }
             numberOfLines={1}
+            ellipsizeMode="tail"
           >
             {subLabel}
           </Text>
@@ -213,7 +217,7 @@ const ProfessionalCreateExpertiseForm = ({
       </FormControl>
 
       <Button
-        className="bg-black mt-2"
+        className="mt-2"
         onPress={handleSubmit}
         isDisabled={mutation.isPending}
       >
@@ -254,10 +258,7 @@ const ProfessionalCreateExpertiseForm = ({
         </ActionsheetContent>
       </Actionsheet>
 
-      <Actionsheet
-        isOpen={showSubSheet}
-        onClose={() => setShowSubSheet(false)}
-      >
+      <Actionsheet isOpen={showSubSheet} onClose={() => setShowSubSheet(false)}>
         <ActionsheetBackdrop />
         <ActionsheetContent>
           <ActionsheetDragIndicatorWrapper>
@@ -271,7 +272,9 @@ const ProfessionalCreateExpertiseForm = ({
                 onPress={() => toggleCategory(cat.id)}
                 className="justify-between"
               >
-                <ActionsheetItemText className={isSelected ? "font-medium" : ""}>
+                <ActionsheetItemText
+                  className={isSelected ? "font-medium" : ""}
+                >
                   {cat.name}
                 </ActionsheetItemText>
                 {isSelected && (

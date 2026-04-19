@@ -14,7 +14,6 @@ import AuthenticationScreen from "./src/screens/AuthenticationScreen";
 import CheckEmailScreen from "./src/screens/CheckEmailScreen";
 import { useAuthListener } from "./src/hooks/useAuthListener";
 import { useUserStore } from "./src/stores/useUserStore";
-import { View } from "react-native";
 import ProfileScreen from "./src/screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -32,7 +31,10 @@ export default function App() {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               <Stack.Screen name="home" component={HomeScreen} />
               <Stack.Screen name="explore" component={ExploreScreen} />
-              <Stack.Screen name="services" component={ProfessionalExpertisesScreen} />
+              <Stack.Screen
+                name="professional-expertises"
+                component={ProfessionalExpertisesScreen}
+              />
               <Stack.Screen name="expertise" component={ExpertiseScreen} />
               <Stack.Screen name="checkEmail" component={CheckEmailScreen} />
               {!!user ? (
