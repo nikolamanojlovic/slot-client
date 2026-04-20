@@ -5,9 +5,11 @@ import { ExploreResponseItem } from "@/src/types/api/search/search.interface";
 import { useAppNavigation } from "@/src/hooks/useAppNavigation";
 import { H3 } from "@expo/html-elements";
 import { Pressable } from "react-native";
+import { HStack } from "@/components/ui/hstack";
 import { colors } from "@/src/constants/colors";
 import { cardStyle } from "@/src/constants/styles";
 import ExplorePreviewExpertiseItem from "@/src/components/molecules/previews/ExplorePreviewExpertiseItem";
+import Rating from "@/src/components/atoms/Rating";
 
 interface ExplorePreviewProps {
   preview: ExploreResponseItem;
@@ -32,12 +34,19 @@ const ExplorePreview = ({ preview }: ExplorePreviewProps) => {
         className="w-full h-[120px]"
       />
       <VStack className="p-3" space="sm">
-        <H3 className="m-0" style={{ color: colors.primary }}>
-          {preview.tenantName}
-        </H3>
+        <HStack className="items-center justify-between mb-2">
+          <H3 className="m-0" style={{ color: colors.primary }}>
+            {preview.tenantName}
+          </H3>
+          <Rating rating={undefined} />
+        </HStack>
         {preview.expertises?.length ? (
-          preview.expertises.map((exp) => (
-            <ExplorePreviewExpertiseItem key={exp.id} expertise={exp} />
+          preview.expertises.map((exp, index) => (
+            <ExplorePreviewExpertiseItem
+              key={exp.id}
+              expertise={exp}
+              isLast={index === preview.expertises.length - 1}
+            />
           ))
         ) : (
           <Text size="sm" className="text-typography-400">

@@ -18,8 +18,23 @@ const BannerLayout = ({ bannerUri, bannerAlt = "", children }: Props) => {
   return (
     <View className="flex-1">
       <View className="flex-1">
-        <Image source={{ uri: bannerUri }} alt={bannerAlt} className="w-full h-[180px]" />
-        <View className="flex-1 pr-3 pl-3">{children}</View>
+        <Image
+          source={{ uri: bannerUri }}
+          alt={bannerAlt}
+          className="w-full h-[180px]"
+        />
+        <View
+          className="flex-1 pr-3 pl-3"
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: -4 },
+            shadowOpacity: 0.15,
+            shadowRadius: 8,
+            elevation: 6,
+          }}
+        >
+          {children}
+        </View>
       </View>
       {isProfessional ? <ProfessionalNavigationBar /> : <NavigationBar />}
     </View>

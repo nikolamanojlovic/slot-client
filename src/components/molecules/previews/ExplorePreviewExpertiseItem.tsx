@@ -7,9 +7,10 @@ import type { ExploreResponseItemList } from "@/src/types/api/search/search.inte
 
 interface Props {
   expertise: ExploreResponseItemList;
+  isLast?: boolean;
 }
 
-const ExplorePreviewExpertiseItem = ({ expertise }: Props) => (
+const ExplorePreviewExpertiseItem = ({ expertise, isLast }: Props) => (
   <VStack className="mb-2">
     <HStack className="justify-between items-center">
       <VStack className="items-start">
@@ -26,7 +27,7 @@ const ExplorePreviewExpertiseItem = ({ expertise }: Props) => (
         </Text>
       )}
     </HStack>
-    <Divider className="mt-2 w-2/5 self-center" />
+    {!isLast && <Divider className="mt-2 w-4/5 self-center" />}
   </VStack>
 );
 

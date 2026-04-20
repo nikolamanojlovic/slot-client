@@ -24,6 +24,7 @@ export interface CreateExpertiseRequest {
   categories: string[];
   professionals: string[];
   amount: number;
+  active: boolean;
 }
 
 export const createExpertise = async (body: CreateExpertiseRequest): Promise<void> => {

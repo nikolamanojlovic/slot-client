@@ -14,6 +14,12 @@ import {
   ActionsheetItemText,
 } from "@/components/ui/actionsheet";
 import { Button, ButtonText } from "@/components/ui/button";
+import {
+  Checkbox,
+  CheckboxIndicator,
+  CheckboxIcon,
+  CheckboxLabel,
+} from "@/components/ui/checkbox";
 import { Icon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
@@ -51,6 +57,7 @@ const ProfessionalCreateExpertiseForm = ({
     capacity: "",
     amount: "",
   });
+  const [active, setActive] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [showSuperSheet, setShowSuperSheet] = useState(false);
   const [showSubSheet, setShowSubSheet] = useState(false);
@@ -84,7 +91,13 @@ const ProfessionalCreateExpertiseForm = ({
   });
 
   const resetForm = () => {
-    setForm({ name: "", description: "", duration: "", capacity: "", amount: "" });
+    setForm({
+      name: "",
+      description: "",
+      duration: "",
+      capacity: "",
+      amount: "",
+    });
     setSelectedCategories([]);
     setSelectedSuperCategoryId(null);
   };
@@ -99,6 +112,7 @@ const ProfessionalCreateExpertiseForm = ({
       categories: selectedCategories,
       professionals: [professionalId],
       amount: parseFloat(form.amount),
+      active,
     });
   };
 
@@ -140,50 +154,6 @@ const ProfessionalCreateExpertiseForm = ({
             placeholder="Optional description"
             value={form.description}
             onChangeText={(v) => setForm((p) => ({ ...p, description: v }))}
-          />
-        </Input>
-      </FormControl>
-
-      <HStack space="md">
-        <FormControl className="flex-1">
-          <FormControlLabel>
-            <FormControlLabelText>Duration (min)</FormControlLabelText>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="45"
-              keyboardType="numeric"
-              value={form.duration}
-              onChangeText={(v) => setForm((p) => ({ ...p, duration: v }))}
-            />
-          </Input>
-        </FormControl>
-
-        <FormControl className="flex-1">
-          <FormControlLabel>
-            <FormControlLabelText>Capacity</FormControlLabelText>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="1"
-              keyboardType="numeric"
-              value={form.capacity}
-              onChangeText={(v) => setForm((p) => ({ ...p, capacity: v }))}
-            />
-          </Input>
-        </FormControl>
-      </HStack>
-
-      <FormControl>
-        <FormControlLabel>
-          <FormControlLabelText>Price (RSD)</FormControlLabelText>
-        </FormControlLabel>
-        <Input>
-          <InputField
-            placeholder="0.00"
-            keyboardType="decimal-pad"
-            value={form.amount}
-            onChangeText={(v) => setForm((p) => ({ ...p, amount: v }))}
           />
         </Input>
       </FormControl>
@@ -235,6 +205,64 @@ const ProfessionalCreateExpertiseForm = ({
           <Icon as={ChevronDown} size="sm" className="text-background-500" />
         </Pressable>
       </FormControl>
+
+      <HStack space="md">
+        <FormControl className="flex-1">
+          <FormControlLabel>
+            <FormControlLabelText>Duration (min)</FormControlLabelText>
+          </FormControlLabel>
+          <Input>
+            <InputField
+              placeholder="45"
+              keyboardType="numeric"
+              value={form.duration}
+              onChangeText={(v) => setForm((p) => ({ ...p, duration: v }))}
+            />
+          </Input>
+        </FormControl>
+
+        <FormControl className="flex-1">
+          <FormControlLabel>
+            <FormControlLabelText>Capacity</FormControlLabelText>
+          </FormControlLabel>
+          <Input>
+            <InputField
+              placeholder="1"
+              keyboardType="numeric"
+              value={form.capacity}
+              onChangeText={(v) => setForm((p) => ({ ...p, capacity: v }))}
+            />
+          </Input>
+        </FormControl>
+      </HStack>
+
+      <HStack space="md" className="items-end">
+        <FormControl className="flex-1">
+          <FormControlLabel>
+            <FormControlLabelText>Price (RSD)</FormControlLabelText>
+          </FormControlLabel>
+          <Input>
+            <InputField
+              placeholder="0.00"
+              keyboardType="decimal-pad"
+              value={form.amount}
+              onChangeText={(v) => setForm((p) => ({ ...p, amount: v }))}
+            />
+          </Input>
+        </FormControl>
+        <Checkbox
+          size="md"
+          value="active"
+          isChecked={active}
+          onChange={setActive}
+          className="mb-2"
+        >
+          <CheckboxIndicator>
+            <CheckboxIcon as={Check} />
+          </CheckboxIndicator>
+          <CheckboxLabel>Active</CheckboxLabel>
+        </Checkbox>
+      </HStack>
 
       <Button
         className="mt-2"

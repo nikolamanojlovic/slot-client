@@ -4,6 +4,9 @@ import BannerLayout from "../components/BannerLayout";
 import { Heading } from "@/components/ui/heading";
 import { Spinner } from "@/components/ui/spinner";
 import { VStack } from "@/components/ui/vstack";
+import { HStack } from "@/components/ui/hstack";
+import { Avatar, AvatarFallbackText } from "@/components/ui/avatar";
+import Rating from "@/src/components/atoms/Rating";
 import TenantExpertiseItem from "@/src/components/molecules/TenantExpertiseItem";
 import { useQuery } from "@tanstack/react-query";
 
@@ -41,9 +44,17 @@ const TenantScreen = ({ route }: Props) => {
 
   return (
     <BannerLayout bannerUri={dummyImage} bannerAlt={tenantData?.name}>
-      <Heading size="2xl" className="text-left text-primary-500 mt-3 mb-3">
-        {tenantData?.name ?? tenantId}
-      </Heading>
+      <HStack className="items-center mt-3 mb-3" space="md">
+        <Avatar size="md">
+          <AvatarFallbackText>{tenantData?.name ?? tenantId}</AvatarFallbackText>
+        </Avatar>
+        <VStack>
+          <Heading size="2xl" className="text-left text-primary-500">
+            {tenantData?.name ?? tenantId}
+          </Heading>
+          <Rating />
+        </VStack>
+      </HStack>
       {isLoading && <Spinner size="large" color="black" />}
       <VStack space="sm">
         {expertiseData?.content.map((expertise) => (

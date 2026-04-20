@@ -1,14 +1,12 @@
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
 import { Text } from "@/components/ui/text";
 import { Badge, BadgeText } from "@/components/ui/badge";
-import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
 import type { Expertise } from "@/src/types/api/expertise/expertise.interface";
 import { colors } from "@/src/constants/colors";
 import { cardStyle } from "@/src/constants/styles";
 import PriceLabel from "@/src/components/atoms/PriceLabel";
-import { CircleAlert } from "lucide-react-native";
 
 interface Props {
   expertise: Expertise;
@@ -16,49 +14,53 @@ interface Props {
   onPress?: () => void;
 }
 
-const ProfessionalExpertiseItem = ({ expertise, categoryMap, onPress }: Props) => (
+const ProfessionalExpertiseItem = ({
+  expertise,
+  categoryMap,
+  onPress,
+}: Props) => (
   <Pressable onPress={onPress}>
-  <HStack
-    space="md"
-    className="items-center justify-between p-3 rounded-md"
-    style={cardStyle}
-  >
-    <VStack space="xs" className="flex-1">
-      <Alert
-        action="error"
-        variant="solid"
-        className="py-1 px-1 gap-1 items-center"
-      >
-        <AlertIcon as={CircleAlert} size="xs" />
-        <AlertText size="xs" className="font-medium">
-          Slots not configured
-        </AlertText>
-      </Alert>
-      <Text className="font-bold" style={{ color: colors.primary }}>
-        {expertise.name}
-      </Text>
-      <Text size="sm" className="text-typography-500">
-        {`${expertise.capacity} ${expertise.capacity === 1 ? "person" : "people"}, ${expertise.duration} min`}
-      </Text>
-      <PriceLabel price={expertise.price} />
-      <HStack space="xs" className="flex-wrap mt-3">
-        {expertise.categories.map((catId) => (
-          <Badge
-            key={catId}
-            size="sm"
+    <HStack
+      space="md"
+      className="items-center justify-between p-3 rounded-md"
+      style={cardStyle}
+    >
+      <VStack space="xs" className="flex-1">
+        <HStack space="xs" className="items-center">
+          <View
             style={{
-              backgroundColor: colors.primary,
-              borderColor: colors.primary,
+              width: 8,
+              height: 8,
+              borderRadius: 4,
+              backgroundColor: expertise.active ? colors.success : colors.error,
             }}
-          >
-            <BadgeText style={{ color: colors.white }}>
-              {categoryMap.get(catId) ?? catId}
-            </BadgeText>
-          </Badge>
-        ))}
-      </HStack>
-    </VStack>
-  </HStack>
+          />
+          <Text className="font-bold" style={{ color: colors.primary }}>
+            {expertise.name}
+          </Text>
+        </HStack>
+        <Text size="sm" className="text-typography-500">
+          {`${expertise.capacity} ${expertise.capacity === 1 ? "person" : "people"}, ${expertise.duration} min`}
+        </Text>
+        <PriceLabel price={expertise.price} />
+        <HStack space="xs" className="flex-wrap mt-3">
+          {expertise.categories.map((catId) => (
+            <Badge
+              key={catId}
+              size="sm"
+              style={{
+                backgroundColor: colors.primary,
+                borderColor: colors.primary,
+              }}
+            >
+              <BadgeText style={{ color: colors.white }}>
+                {categoryMap.get(catId) ?? catId}
+              </BadgeText>
+            </Badge>
+          ))}
+        </HStack>
+      </VStack>
+    </HStack>
   </Pressable>
 );
 

@@ -10,6 +10,8 @@ import HomeScreen from "./src/screens/HomeScreen";
 import ExploreScreen from "./src/screens/ExploreScreen";
 import TenantScreen from "./src/screens/TenantScreen";
 import ProfessionalExpertisesScreen from "./src/screens/ProfessionalExpertisesScreen";
+import ProfessionalCreateExpertiseScreen from "./src/screens/ProfessionalCreateExpertiseScreen";
+import ProfessionalEditExpertiseScreen from "./src/screens/ProfessionalEditExpertiseScreen";
 import AuthenticationScreen from "./src/screens/AuthenticationScreen";
 import CheckEmailScreen from "./src/screens/CheckEmailScreen";
 import { useAuthListener } from "./src/hooks/useAuthListener";
@@ -36,6 +38,8 @@ export default function App() {
                 component={ProfessionalExpertisesScreen}
               />
               <Stack.Screen name="tenant" component={TenantScreen} />
+              <Stack.Screen name="professional-expertises-create" component={ProfessionalCreateExpertiseScreen} />
+              <Stack.Screen name="professional-expertises-edit" component={ProfessionalEditExpertiseScreen} />
               <Stack.Screen name="checkEmail" component={CheckEmailScreen} />
               {!!user ? (
                 <Stack.Screen name="profile" component={ProfileScreen} />
