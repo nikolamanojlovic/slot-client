@@ -1,7 +1,5 @@
-import BasicLayout from "../components/BasicLayout";
+import BasicNavigationLayout from "../components/BasicNavigationLayout";
 import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
-import { HStack } from "@/components/ui/hstack";
 import ExploreSearch from "../components/molecules/search/ExploreSearch";
 import { useQuery } from "@tanstack/react-query";
 import { ExploreResponse } from "@/src/types/api/search/search.interface";
@@ -27,13 +25,8 @@ const ExploreScreen = () => {
   });
 
   return (
-    <BasicLayout>
+    <BasicNavigationLayout title="Explore" showBack={false}>
       <VStack className="h-full mb-3">
-        <HStack className="w-full justify-between">
-          <Heading size="2xl" className="text-left text-primary-500 mt-3 mb-3">
-            Explore
-          </Heading>
-        </HStack>
         <ExploreSearch query={query} setQuery={setQuery} />
         {isLoading && (
           <Spinner className="flex-1 m-0" size="large" color="black" />
@@ -45,7 +38,7 @@ const ExploreScreen = () => {
             ))}
         </ScrollView>
       </VStack>
-    </BasicLayout>
+    </BasicNavigationLayout>
   );
 };
 

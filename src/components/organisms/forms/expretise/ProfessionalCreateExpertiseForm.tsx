@@ -33,6 +33,7 @@ import { AxiosError } from "axios";
 import { createExpertise } from "@/src/api/expertise";
 import { useCategoryTree } from "@/src/hooks/useCategoryTree";
 import { ErrorResponse } from "@/src/types/common/error.interface";
+import { colors } from "@/src/constants/colors";
 
 interface ProfessionalCreateExpertiseFormProps {
   tenantId: string;
@@ -134,7 +135,12 @@ const ProfessionalCreateExpertiseForm = ({
     <VStack space="md">
       <FormControl>
         <FormControlLabel>
-          <FormControlLabelText>Name</FormControlLabelText>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Name
+          </FormControlLabelText>
         </FormControlLabel>
         <Input>
           <InputField
@@ -147,7 +153,12 @@ const ProfessionalCreateExpertiseForm = ({
 
       <FormControl>
         <FormControlLabel>
-          <FormControlLabelText>Description</FormControlLabelText>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Description
+          </FormControlLabelText>
         </FormControlLabel>
         <Input>
           <InputField
@@ -160,11 +171,16 @@ const ProfessionalCreateExpertiseForm = ({
 
       <FormControl>
         <FormControlLabel>
-          <FormControlLabelText>Category</FormControlLabelText>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Category
+          </FormControlLabelText>
         </FormControlLabel>
         <Pressable
           onPress={() => setShowSuperSheet(true)}
-          className="border border-background-300 rounded h-10 px-3 flex-row items-center justify-between"
+          className="border border-background-300 rounded h-10 px-3 flex-row items-center justify-between bg-white"
         >
           <Text
             className={
@@ -183,11 +199,16 @@ const ProfessionalCreateExpertiseForm = ({
 
       <FormControl>
         <FormControlLabel>
-          <FormControlLabelText>Subcategory</FormControlLabelText>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Subcategory
+          </FormControlLabelText>
         </FormControlLabel>
         <Pressable
           onPress={() => selectedSuperCategoryId && setShowSubSheet(true)}
-          className={`border border-background-300 rounded h-10 px-3 flex-row items-center justify-between ${
+          className={`border border-background-300 rounded h-10 px-3 flex-row items-center justify-between bg-white ${
             !selectedSuperCategoryId ? "opacity-40" : ""
           }`}
         >
@@ -209,7 +230,12 @@ const ProfessionalCreateExpertiseForm = ({
       <HStack space="md">
         <FormControl className="flex-1">
           <FormControlLabel>
-            <FormControlLabelText>Duration (min)</FormControlLabelText>
+            <FormControlLabelText
+              style={{ color: colors.primary }}
+              className="font-semibold text-xs"
+            >
+              Duration (min)
+            </FormControlLabelText>
           </FormControlLabel>
           <Input>
             <InputField
@@ -223,7 +249,12 @@ const ProfessionalCreateExpertiseForm = ({
 
         <FormControl className="flex-1">
           <FormControlLabel>
-            <FormControlLabelText>Capacity</FormControlLabelText>
+            <FormControlLabelText
+              style={{ color: colors.primary }}
+              className="font-semibold text-xs"
+            >
+              Capacity
+            </FormControlLabelText>
           </FormControlLabel>
           <Input>
             <InputField
@@ -236,33 +267,37 @@ const ProfessionalCreateExpertiseForm = ({
         </FormControl>
       </HStack>
 
-      <HStack space="md" className="items-end">
-        <FormControl className="flex-1">
-          <FormControlLabel>
-            <FormControlLabelText>Price (RSD)</FormControlLabelText>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="0.00"
-              keyboardType="decimal-pad"
-              value={form.amount}
-              onChangeText={(v) => setForm((p) => ({ ...p, amount: v }))}
-            />
-          </Input>
-        </FormControl>
-        <Checkbox
-          size="md"
-          value="active"
-          isChecked={active}
-          onChange={setActive}
-          className="mb-2"
-        >
-          <CheckboxIndicator>
-            <CheckboxIcon as={Check} />
-          </CheckboxIndicator>
-          <CheckboxLabel>Active</CheckboxLabel>
-        </Checkbox>
-      </HStack>
+      <FormControl>
+        <FormControlLabel>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Price (RSD)
+          </FormControlLabelText>
+        </FormControlLabel>
+        <Input>
+          <InputField
+            placeholder="0.00"
+            keyboardType="decimal-pad"
+            value={form.amount}
+            onChangeText={(v) => setForm((p) => ({ ...p, amount: v }))}
+          />
+        </Input>
+      </FormControl>
+      <Checkbox
+        size="md"
+        value="active"
+        isChecked={active}
+        onChange={setActive}
+      >
+        <CheckboxIndicator>
+          <CheckboxIcon as={Check} />
+        </CheckboxIndicator>
+        <CheckboxLabel style={{ color: colors.primary }} className="font-semibold text-xs">
+          Make service available for booking
+        </CheckboxLabel>
+      </Checkbox>
 
       <Button
         className="mt-2"

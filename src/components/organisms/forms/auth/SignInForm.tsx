@@ -15,6 +15,7 @@ import { Input, InputField } from "@/components/ui/input";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
+import { colors } from "@/src/constants/colors";
 
 export const SignInForm = () => {
   const { signIn, signInError, isSigningIn } = useAuth();
@@ -49,7 +50,7 @@ export const SignInForm = () => {
     <VStack className="w-full">
       <FormControl size="md" isInvalid={!!errors.email}>
         <Box className="mb-3">
-          <FormControlLabelText className="mb-2">Email</FormControlLabelText>
+          <FormControlLabelText className="mb-2 font-semibold text-xs" style={{ color: colors.primary }}>Email</FormControlLabelText>
           <Input className="w-full" size="md">
             <InputField
               value={form.email}
@@ -70,7 +71,7 @@ export const SignInForm = () => {
       </FormControl>
       <FormControl size="md" isInvalid={!!errors.password}>
         <Box className="mb-5">
-          <FormControlLabelText className="mb-2">Password</FormControlLabelText>
+          <FormControlLabelText className="mb-2 font-semibold text-xs" style={{ color: colors.primary }}>Password</FormControlLabelText>
           <Input className="w-full" size="md">
             <InputField
               value={form.password}

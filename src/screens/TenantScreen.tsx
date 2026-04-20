@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/src/types/navigation/navigation.type";
-import BannerLayout from "../components/BannerLayout";
+import BasicNavigationLayout from "../components/BasicNavigationLayout";
 import { Heading } from "@/components/ui/heading";
 import { Spinner } from "@/components/ui/spinner";
 import { VStack } from "@/components/ui/vstack";
@@ -9,6 +9,7 @@ import { Avatar, AvatarFallbackText } from "@/components/ui/avatar";
 import Rating from "@/src/components/atoms/Rating";
 import TenantExpertiseItem from "@/src/components/molecules/TenantExpertiseItem";
 import { useQuery } from "@tanstack/react-query";
+import { ScrollView, Image } from "react-native";
 
 import { ExpertiseResponse } from "@/src/types/api/expertise/expertise.interface";
 import { TenantResponse } from "@/src/types/api/tenant/tenant.interface";
@@ -43,28 +44,35 @@ const TenantScreen = ({ route }: Props) => {
   const dummyImage = "https://img.freepik.com/free-photo/strong-man-training-gym_1303-23478.jpg?semt=ais_hybrid&w=740&q=80";
 
   return (
-    <BannerLayout bannerUri={dummyImage} bannerAlt={tenantData?.name}>
-      <HStack className="items-center mt-3 mb-3" space="md">
-        <Avatar size="md">
-          <AvatarFallbackText>{tenantData?.name ?? tenantId}</AvatarFallbackText>
-        </Avatar>
-        <VStack>
-          <Heading size="2xl" className="text-left text-primary-500">
-            {tenantData?.name ?? tenantId}
-          </Heading>
-          <Rating />
+    <BasicNavigationLayout title={tenantData?.name ?? ""}>
+      <ScrollView className="flex-1">
+        <Image
+          source={{ uri: dummyImage }}
+          style={{ width: "100%", height: 180, borderRadius: 8, marginBottom: 12 }}
+          resizeMode="cover"
+        />
+        <HStack className="items-center mb-3" space="md">
+          <Avatar size="md">
+            <AvatarFallbackText>{tenantData?.name ?? tenantId}</AvatarFallbackText>
+          </Avatar>
+          <VStack>
+            <Heading size="2xl" className="text-left text-primary-500">
+              {tenantData?.name ?? tenantId}
+            </Heading>
+            <Rating />
+          </VStack>
+        </HStack>
+        {isLoading && <Spinner size="large" color="black" />}
+        <VStack space="sm">
+          {expertiseData?.content.map((expertise) => (
+            <TenantExpertiseItem
+              key={expertise.id}
+              expertise={expertise}
+            />
+          ))}
         </VStack>
-      </HStack>
-      {isLoading && <Spinner size="large" color="black" />}
-      <VStack space="sm">
-        {expertiseData?.content.map((expertise) => (
-          <TenantExpertiseItem
-            key={expertise.id}
-            expertise={expertise}
-          />
-        ))}
-      </VStack>
-    </BannerLayout>
+      </ScrollView>
+    </BasicNavigationLayout>
   );
 };
 

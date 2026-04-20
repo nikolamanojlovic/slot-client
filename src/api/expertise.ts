@@ -39,6 +39,7 @@ export interface UpdateExpertiseRequest {
   capacity?: number;
   categories?: string[];
   amount?: number;
+  active?: boolean;
 }
 
 export const updateExpertise = async ({ expertiseId, ...body }: UpdateExpertiseRequest): Promise<void> => {

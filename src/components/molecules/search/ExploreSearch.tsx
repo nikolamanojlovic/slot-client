@@ -16,7 +16,7 @@ const ExploreSearch = ({ query, setQuery }: ExploreSearchProps) => {
 
   return (
     <HStack className="w-full mb-2">
-      <Input className="flex-1" size="md">
+      <Input className="flex-1" size="md" style={{ borderColor: colors.primary }}>
         <InputSlot className="pl-3">
           <InputIcon as={SearchIcon} color={colors.primary} />
         </InputSlot>

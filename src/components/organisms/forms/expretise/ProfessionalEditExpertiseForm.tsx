@@ -28,6 +28,7 @@ import { Expertise } from "@/src/types/api/expertise/expertise.interface";
 import { ErrorResponse } from "@/src/types/common/error.interface";
 import { updateExpertise, deleteExpertise } from "@/src/api/expertise";
 import { useCategoryTree } from "@/src/hooks/useCategoryTree";
+import { colors } from "@/src/constants/colors";
 
 interface Props {
   expertise: Expertise;
@@ -97,14 +98,32 @@ const ProfessionalEditExpertiseForm = ({
     onError,
   });
 
+  const deactivateMutation = useMutation({
+    mutationFn: () => updateExpertise({ expertiseId: expertise.id, active: !expertise.active }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expertises/me"] });
+      onClose();
+    },
+    onError,
+  });
+
   const handleSubmit = () => {
-    const patch: Parameters<typeof updateExpertise>[0] = { expertiseId: expertise.id };
+    const patch: Parameters<typeof updateExpertise>[0] = {
+      expertiseId: expertise.id,
+    };
 
     if (form.name !== expertise.name) patch.name = form.name;
-    if (form.description !== expertise.description) patch.description = form.description;
-    if (parseInt(form.duration, 10) !== expertise.duration) patch.duration = parseInt(form.duration, 10);
-    if (parseInt(form.capacity, 10) !== expertise.capacity) patch.capacity = parseInt(form.capacity, 10);
-    if (form.amount !== "" && parseFloat(form.amount) !== expertise.price?.amount) patch.amount = parseFloat(form.amount);
+    if (form.description !== expertise.description)
+      patch.description = form.description;
+    if (parseInt(form.duration, 10) !== expertise.duration)
+      patch.duration = parseInt(form.duration, 10);
+    if (parseInt(form.capacity, 10) !== expertise.capacity)
+      patch.capacity = parseInt(form.capacity, 10);
+    if (
+      form.amount !== "" &&
+      parseFloat(form.amount) !== expertise.price?.amount
+    )
+      patch.amount = parseFloat(form.amount);
 
     const categoriesChanged =
       selectedCategories.length !== expertise.categories.length ||
@@ -132,7 +151,12 @@ const ProfessionalEditExpertiseForm = ({
     <VStack space="md">
       <FormControl>
         <FormControlLabel>
-          <FormControlLabelText>Name</FormControlLabelText>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Name
+          </FormControlLabelText>
         </FormControlLabel>
         <Input>
           <InputField
@@ -145,7 +169,12 @@ const ProfessionalEditExpertiseForm = ({
 
       <FormControl>
         <FormControlLabel>
-          <FormControlLabelText>Description</FormControlLabelText>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Description
+          </FormControlLabelText>
         </FormControlLabel>
         <Input>
           <InputField
@@ -156,57 +185,18 @@ const ProfessionalEditExpertiseForm = ({
         </Input>
       </FormControl>
 
-      <HStack space="md">
-        <FormControl className="flex-1">
-          <FormControlLabel>
-            <FormControlLabelText>Duration (min)</FormControlLabelText>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="45"
-              keyboardType="numeric"
-              value={form.duration}
-              onChangeText={(v) => setForm((p) => ({ ...p, duration: v }))}
-            />
-          </Input>
-        </FormControl>
-
-        <FormControl className="flex-1">
-          <FormControlLabel>
-            <FormControlLabelText>Capacity</FormControlLabelText>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="1"
-              keyboardType="numeric"
-              value={form.capacity}
-              onChangeText={(v) => setForm((p) => ({ ...p, capacity: v }))}
-            />
-          </Input>
-        </FormControl>
-      </HStack>
-
       <FormControl>
         <FormControlLabel>
-          <FormControlLabelText>Price (RSD)</FormControlLabelText>
-        </FormControlLabel>
-        <Input>
-          <InputField
-            placeholder="0.00"
-            keyboardType="decimal-pad"
-            value={form.amount}
-            onChangeText={(v) => setForm((p) => ({ ...p, amount: v }))}
-          />
-        </Input>
-      </FormControl>
-
-      <FormControl>
-        <FormControlLabel>
-          <FormControlLabelText>Category</FormControlLabelText>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Category
+          </FormControlLabelText>
         </FormControlLabel>
         <Pressable
           onPress={() => setShowSuperSheet(true)}
-          className="border border-background-300 rounded h-10 px-3 flex-row items-center justify-between"
+          className="border border-background-300 rounded h-10 px-3 flex-row items-center justify-between bg-white"
         >
           <Text
             className={
@@ -225,11 +215,16 @@ const ProfessionalEditExpertiseForm = ({
 
       <FormControl>
         <FormControlLabel>
-          <FormControlLabelText>Subcategory</FormControlLabelText>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Subcategory
+          </FormControlLabelText>
         </FormControlLabel>
         <Pressable
           onPress={() => selectedSuperCategoryId && setShowSubSheet(true)}
-          className={`border border-background-300 rounded h-10 px-3 flex-row items-center justify-between ${
+          className={`border border-background-300 rounded h-10 px-3 flex-row items-center justify-between bg-white ${
             !selectedSuperCategoryId ? "opacity-40" : ""
           }`}
         >
@@ -248,6 +243,65 @@ const ProfessionalEditExpertiseForm = ({
         </Pressable>
       </FormControl>
 
+      <HStack space="md">
+        <FormControl className="flex-1">
+          <FormControlLabel>
+            <FormControlLabelText
+              style={{ color: colors.primary }}
+              className="font-semibold text-xs"
+            >
+              Duration (min)
+            </FormControlLabelText>
+          </FormControlLabel>
+          <Input>
+            <InputField
+              placeholder="45"
+              keyboardType="numeric"
+              value={form.duration}
+              onChangeText={(v) => setForm((p) => ({ ...p, duration: v }))}
+            />
+          </Input>
+        </FormControl>
+
+        <FormControl className="flex-1">
+          <FormControlLabel>
+            <FormControlLabelText
+              style={{ color: colors.primary }}
+              className="font-semibold text-xs"
+            >
+              Capacity
+            </FormControlLabelText>
+          </FormControlLabel>
+          <Input>
+            <InputField
+              placeholder="1"
+              keyboardType="numeric"
+              value={form.capacity}
+              onChangeText={(v) => setForm((p) => ({ ...p, capacity: v }))}
+            />
+          </Input>
+        </FormControl>
+      </HStack>
+
+      <FormControl>
+        <FormControlLabel>
+          <FormControlLabelText
+            style={{ color: colors.primary }}
+            className="font-semibold text-xs"
+          >
+            Price (RSD)
+          </FormControlLabelText>
+        </FormControlLabel>
+        <Input>
+          <InputField
+            placeholder="0.00"
+            keyboardType="decimal-pad"
+            value={form.amount}
+            onChangeText={(v) => setForm((p) => ({ ...p, amount: v }))}
+          />
+        </Input>
+      </FormControl>
+
       <Button
         className="mt-2"
         onPress={handleSubmit}
@@ -260,18 +314,32 @@ const ProfessionalEditExpertiseForm = ({
         )}
       </Button>
 
-      <Button
-        className="mt-1"
-        action="negative"
-        onPress={() => deleteMutation.mutate()}
-        isDisabled={deleteMutation.isPending}
-      >
-        {deleteMutation.isPending ? (
-          <Spinner size="small" color="white" />
-        ) : (
-          <ButtonText className="text-white">Delete</ButtonText>
-        )}
-      </Button>
+      <HStack space="sm" className="mt-1">
+        <Button
+          className="flex-1"
+          onPress={() => deactivateMutation.mutate()}
+          style={{ backgroundColor: "#4B5563" }}
+          isDisabled={deactivateMutation.isPending}
+        >
+          {deactivateMutation.isPending ? (
+            <Spinner size="small" color="white" />
+          ) : (
+            <ButtonText>{expertise.active ? "Deactivate" : "Activate"}</ButtonText>
+          )}
+        </Button>
+        <Button
+          className="flex-1"
+          action="negative"
+          onPress={() => deleteMutation.mutate()}
+          isDisabled={deleteMutation.isPending}
+        >
+          {deleteMutation.isPending ? (
+            <Spinner size="small" color="white" />
+          ) : (
+            <ButtonText className="text-white">Delete</ButtonText>
+          )}
+        </Button>
+      </HStack>
 
       <Actionsheet
         isOpen={showSuperSheet}

@@ -21,6 +21,7 @@ import {
   CheckboxLabel,
 } from "@/components/ui/checkbox";
 import { Button, ButtonText } from "@/components/ui/button";
+import { colors } from "@/src/constants/colors";
 
 export const SignUpForm = () => {
   const { signUp } = useAuth();
@@ -70,7 +71,7 @@ export const SignUpForm = () => {
       <FormControl size="md">
         <HStack className="w-full gap-2 mb-3">
           <VStack className="flex-1">
-            <FormControlLabelText className="mb-2">
+            <FormControlLabelText className="mb-2 font-semibold text-xs" style={{ color: colors.primary }}>
               First name
             </FormControlLabelText>
             <Input className="w-full" size="md">
@@ -84,7 +85,7 @@ export const SignUpForm = () => {
             </Input>
           </VStack>
           <VStack className="flex-1">
-            <FormControlLabelText className="mb-2">
+            <FormControlLabelText className="mb-2 font-semibold text-xs" style={{ color: colors.primary }}>
               Last name
             </FormControlLabelText>
             <Input className="w-full" size="md">
@@ -99,7 +100,7 @@ export const SignUpForm = () => {
           </VStack>
         </HStack>
         <Box className="mb-3">
-          <FormControlLabelText className="mb-2">Email</FormControlLabelText>
+          <FormControlLabelText className="mb-2 font-semibold text-xs" style={{ color: colors.primary }}>Email</FormControlLabelText>
           <Input className="w-full" size="md">
             <InputField
               id="sign-up-email"
@@ -114,7 +115,7 @@ export const SignUpForm = () => {
           </Input>
         </Box>
         <Box className="mb-3">
-          <FormControlLabelText className="mb-2">Password</FormControlLabelText>
+          <FormControlLabelText className="mb-2 font-semibold text-xs" style={{ color: colors.primary }}>Password</FormControlLabelText>
           <Input className="w-full" size="md">
             <InputField
               id="sign-up-password"
@@ -128,7 +129,7 @@ export const SignUpForm = () => {
           </Input>
         </Box>
         <Box className="mb-3">
-          <FormControlLabelText className="mb-2">
+          <FormControlLabelText className="mb-2 font-semibold text-xs" style={{ color: colors.primary }}>
             Confirm password
           </FormControlLabelText>
           <Input className="w-full" size="md">

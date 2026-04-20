@@ -35,7 +35,7 @@ const ProfessionalExpertiseItem = ({
               backgroundColor: expertise.active ? colors.success : colors.error,
             }}
           />
-          <Text className="font-bold" style={{ color: colors.primary }}>
+          <Text className="font-bold ml-1" style={{ color: colors.primary }}>
             {expertise.name}
           </Text>
         </HStack>

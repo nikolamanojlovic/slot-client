@@ -1,5 +1,4 @@
-import BasicLayout from "../components/BasicLayout";
-import { Heading } from "@/components/ui/heading";
+import BasicNavigationLayout from "../components/BasicNavigationLayout";
 import { HStack } from "@/components/ui/hstack";
 import {
   Avatar,
@@ -20,11 +19,8 @@ const ProfileScreen = () => {
   const user = useUserStore((s) => s.user);
 
   return (
-    <BasicLayout>
-      <Heading size="2xl" className="text-left text-primary-500 mt-3 mb-3">
-        Profile
-      </Heading>
-      <HStack className="w-full justify-between">
+    <BasicNavigationLayout title="Profile" showBack={false}>
+      <HStack className="w-full justify-between mt-3">
         <Avatar size="md">
           <AvatarFallbackText>
             {`${user?.firstName[0]}${user?.lastName[0]}`}
@@ -39,7 +35,7 @@ const ProfileScreen = () => {
           <Icon as={LogOut} size="xl" />
         </Pressable>
       </HStack>
-    </BasicLayout>
+    </BasicNavigationLayout>
   );
 };
 
