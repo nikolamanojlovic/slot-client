@@ -98,15 +98,6 @@ const ProfessionalEditExpertiseForm = ({
     onError,
   });
 
-  const deactivateMutation = useMutation({
-    mutationFn: () => updateExpertise({ expertiseId: expertise.id, active: !expertise.active }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["expertises/me"] });
-      onClose();
-    },
-    onError,
-  });
-
   const handleSubmit = () => {
     const patch: Parameters<typeof updateExpertise>[0] = {
       expertiseId: expertise.id,
@@ -317,15 +308,11 @@ const ProfessionalEditExpertiseForm = ({
       <HStack space="sm" className="mt-1">
         <Button
           className="flex-1"
-          onPress={() => deactivateMutation.mutate()}
+          onPress={() => mutation.mutate({ expertiseId: expertise.id, active: !expertise.active })}
           style={{ backgroundColor: "#4B5563" }}
-          isDisabled={deactivateMutation.isPending}
+          isDisabled={mutation.isPending}
         >
-          {deactivateMutation.isPending ? (
-            <Spinner size="small" color="white" />
-          ) : (
-            <ButtonText>{expertise.active ? "Deactivate" : "Activate"}</ButtonText>
-          )}
+          <ButtonText>{expertise.active ? "Deactivate" : "Activate"}</ButtonText>
         </Button>
         <Button
           className="flex-1"

@@ -17,6 +17,9 @@ import CheckEmailScreen from "./src/screens/CheckEmailScreen";
 import { useAuthListener } from "./src/hooks/useAuthListener";
 import { useUserStore } from "./src/stores/useUserStore";
 import ProfileScreen from "./src/screens/ProfileScreen";
+import ProfessionalProfileScreen from "./src/screens/ProfessionalProfileScreen";
+import ProfessionalScheduleScreen from "./src/screens/ProfessionalScheduleScreen";
+import { UserRole } from "./src/types/api/user/user.enum";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -41,10 +44,13 @@ export default function App() {
               <Stack.Screen name="professional-expertises-create" component={ProfessionalCreateExpertiseScreen} />
               <Stack.Screen name="professional-expertises-edit" component={ProfessionalEditExpertiseScreen} />
               <Stack.Screen name="checkEmail" component={CheckEmailScreen} />
-              {!!user ? (
-                <Stack.Screen name="profile" component={ProfileScreen} />
-              ) : (
+              <Stack.Screen name="professional-schedule" component={ProfessionalScheduleScreen} />
+              {!user ? (
                 <Stack.Screen name="profile" component={AuthenticationScreen} />
+              ) : user.role === UserRole.PROFESSIONAL ? (
+                <Stack.Screen name="profile" component={ProfessionalProfileScreen} />
+              ) : (
+                <Stack.Screen name="profile" component={ProfileScreen} />
               )}
             </Stack.Navigator>
           </NavigationContainer>

@@ -1,6 +1,6 @@
 import { HStack } from "@/components/ui/hstack";
 import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
-import { SearchIcon } from "@/components/ui/icon";
+import { Search } from "lucide-react-native";
 import { colors } from "@/src/constants/colors";
 
 interface ExploreSearchProps {
@@ -16,9 +16,14 @@ const ExploreSearch = ({ query, setQuery }: ExploreSearchProps) => {
 
   return (
     <HStack className="w-full mb-2">
-      <Input className="flex-1" size="md" style={{ borderColor: colors.primary }}>
+      <Input
+        className="flex-1"
+        size="md"
+        style={{ borderColor: colors.primary }}
+      >
         <InputSlot className="pl-3">
-          <InputIcon as={SearchIcon} color={colors.primary} />
+          {/* @ts-ignore */}
+          <InputIcon as={Search} color={colors.primary} strokeWidth={2.5} />
         </InputSlot>
         <InputField
           placeholder="Search for categories and businesses"

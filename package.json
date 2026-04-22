@@ -9,12 +9,13 @@
     "web": "expo start --web --port 3000"
   },
   "dependencies": {
-    "@expo/html-elements": "^0.10.1",
+    "@expo/html-elements": "^0.12.5",
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/overlay": "^0.1.22",
     "@gluestack-ui/toast": "^1.0.9",
     "@gluestack-ui/utils": "^3.0.13",
     "@legendapp/motion": "^2.5.3",
+    "@react-native-community/datetimepicker": "8.4.4",
     "@react-navigation/native": "^7.1.26",
     "@react-navigation/native-stack": "^7.9.0",
     "@supabase/supabase-js": "^2.89.0",
@@ -32,6 +33,7 @@
     "react-aria": "^3.45.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
+    "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-reanimated": "~4.1.0",
     "react-native-safe-area-context": "^5.6.2",
     "react-native-svg": "^15.15.3",

@@ -26,23 +26,25 @@ const ProfessionalExpertiseItem = ({
       style={cardStyle}
     >
       <VStack space="xs" className="flex-1">
-        <HStack space="xs" className="items-center">
-          <View
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: expertise.active ? colors.success : colors.error,
-            }}
-          />
-          <Text className="font-bold ml-1" style={{ color: colors.primary }}>
-            {expertise.name}
-          </Text>
+        <HStack className="justify-between items-center">
+          <HStack space="xs" className="items-center">
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: expertise.active ? colors.success : colors.error,
+              }}
+            />
+            <Text className="font-bold ml-1" style={{ color: colors.primary }}>
+              {expertise.name}
+            </Text>
+          </HStack>
+          <PriceLabel price={expertise.price} />
         </HStack>
         <Text size="sm" className="text-typography-500">
           {`${expertise.capacity} ${expertise.capacity === 1 ? "person" : "people"}, ${expertise.duration} min`}
         </Text>
-        <PriceLabel price={expertise.price} />
         <HStack space="xs" className="flex-wrap mt-3">
           {expertise.categories.map((catId) => (
             <Badge

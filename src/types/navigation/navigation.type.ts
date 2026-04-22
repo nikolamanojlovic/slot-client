@@ -7,6 +7,7 @@ export type RootStackParamList = {
   'professional-expertises-create': { tenantId: string; professionalId: string };
   'professional-expertises-edit': { expertise: Expertise };
   profile: undefined;
+  'professional-schedule': undefined;
   tenant: { tenantId: string };
   checkEmail: undefined;
 };
