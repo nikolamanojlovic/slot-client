@@ -1,100 +1,57 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import BasicNavigationLayout from "../components/BasicNavigationLayout";
-import { Button, ButtonText } from "@/components/ui/button";
-import { useUserStore } from "@/src/stores/useUserStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  DayOfWeek,
-  DaySchedule,
-  WorkingHoursResponse,
-  getMyWorkingHours,
-  setWorkingHours,
-} from "@/src/api/workingHours";
-import { View } from "react-native";
+  createScheduleTemplate,
+  getScheduleTemplate,
+} from "@/src/api/scheduleTemplates";
 import { VStack } from "@/components/ui/vstack";
+import { Button, ButtonText } from "@/components/ui/button";
 import { colors } from "@/src/constants/colors";
 import { Spinner } from "@/components/ui/spinner";
-import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
-import { Info } from "lucide-react-native";
-import ProfessionalScheduleTable, {
-  DAYS,
-  RowState,
-  defaultRows,
-} from "@/src/components/molecules/ProfessionalScheduleTable";
-
-const toLocalTime = (date: Date | null) => {
-  if (!date) return null;
-  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:00`;
-};
-
-const parseTime = (time: string | null): Date | null => {
-  if (!time) return null;
-  const [h, m] = time.split(":").map(Number);
-  const d = new Date();
-  d.setHours(h, m, 0, 0);
-  return d;
-};
-
-const responseToRows = (
-  data: WorkingHoursResponse[],
-): Record<DayOfWeek, RowState> => {
-  const base = defaultRows();
-  data.forEach(({ dayOfWeek, working, startTime, endTime }) => {
-    base[dayOfWeek] = {
-      working,
-      startTime: parseTime(startTime),
-      endTime: parseTime(endTime),
-    };
-  });
-  return base;
-};
+import { View } from "react-native";
+import { getMondayDateOfCurrentWeek, formatDateISO } from "@/src/utils/date";
+import ProfessionalScheduleTemplateForm from "@/src/components/organisms/forms/professional/ProfessionalScheduleTemplateForm";
+import SortableList from "@/src/components/atoms/inputs/sortable/SortableList";
+import ProfessionalScheduleWeekIndicator from "@/src/components/molecules/ProfessionalScheduleWeekIndicator";
+import { Text } from "@/components/ui/text";
 
 const ProfessionalScheduleScreen = () => {
-  const user = useUserStore((s) => s.user);
-  const [rows, setRows] = useState<Record<DayOfWeek, RowState>>(defaultRows);
+  const [anchorDate, setAnchorDate] = useState<Date>(
+    getMondayDateOfCurrentWeek,
+  );
+  const [factor, setFactor] = useState(1);
 
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["working-hours/me", user?.tenant?.id],
+    queryKey: ["schedule-template"],
     queryFn: async () => {
       try {
-        return await getMyWorkingHours(user!.tenant!.id);
+        return await getScheduleTemplate();
       } catch (e: any) {
         if (e?.response?.status === 404) return null;
         throw e;
       }
     },
-    enabled: !!user?.tenant?.id,
   });
 
-  useEffect(() => {
-    if (data) setRows(responseToRows(data));
-  }, [data]);
-
   const { mutate, isPending } = useMutation({
-    mutationFn: (schedule: DaySchedule[]) =>
-      setWorkingHours(user!.tenant!.id, { schedule }),
+    mutationFn: () =>
+      createScheduleTemplate({ anchorDate: formatDateISO(anchorDate) }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["working-hours/me", user?.tenant?.id] });
+      queryClient.invalidateQueries({ queryKey: ["schedule-template"] });
     },
   });
 
-  const update = (day: DayOfWeek, patch: Partial<RowState>) =>
-    setRows((prev) => ({ ...prev, [day]: { ...prev[day], ...patch } }));
+  const hasTemplate = data !== null && data !== undefined;
 
-  const handleSave = () => {
-    const schedule: DaySchedule[] = DAYS.map(({ key }) => {
-      const { working, startTime, endTime } = rows[key];
-      return {
-        dayOfWeek: key,
-        working,
-        startTime: working ? toLocalTime(startTime) : null,
-        endTime: working ? toLocalTime(endTime) : null,
-      };
-    });
-    mutate(schedule);
-  };
+  useEffect(() => {
+    if (!data) return;
+    const [year, month, day] = data.anchorDate.split("-").map(Number);
+    setAnchorDate(new Date(year, month - 1, day));
+    setFactor(data.repeatFactor);
+  }, [data]);
 
   return (
     <BasicNavigationLayout title="Schedule" showBack={true}>
@@ -103,24 +60,43 @@ const ProfessionalScheduleScreen = () => {
           <Spinner className="flex-1" size="large" color="black" />
         ) : (
           <View style={{ flex: 1 }}>
-            <ProfessionalScheduleTable rows={rows} onUpdate={update} />
+            <ProfessionalScheduleTemplateForm
+              value={anchorDate}
+              onChange={setAnchorDate}
+              factor={factor}
+              onFactorChange={setFactor}
+              isDisabled={(date) => date.getDay() !== 1}
+            />
+            {data?.weeks && (
+              <>
+                <Text
+                  style={{ color: colors.primary }}
+                  className="font-semibold text-xs mt-4 mb-1"
+                >
+                  Weeks
+                </Text>
+                <SortableList
+                  items={data.weeks}
+                  keyExtractor={(week) => String(week.weekIndex)}
+                  renderItem={(week) => (
+                    <ProfessionalScheduleWeekIndicator week={week} />
+                  )}
+                  onReorder={() => {}}
+                />
+              </>
+            )}
           </View>
         )}
-        {!isLoading && data === null && (
-          <Alert action="error" className="mb-3">
-            <AlertIcon as={Info} />
-            <AlertText>
-              Please add hours in order to enable scheduling
-            </AlertText>
-          </Alert>
-        )}
+
         <Button
-          onPress={handleSave}
-          isDisabled={isPending || isLoading}
           className="mb-3"
           style={{ backgroundColor: colors.primary }}
+          onPress={() => mutate()}
+          isDisabled={isPending || isLoading}
         >
-          <ButtonText>{isPending ? "Saving…" : "Save"}</ButtonText>
+          <ButtonText>
+            {isPending ? "Saving…" : hasTemplate ? "Save" : "Create"}
+          </ButtonText>
         </Button>
       </VStack>
     </BasicNavigationLayout>

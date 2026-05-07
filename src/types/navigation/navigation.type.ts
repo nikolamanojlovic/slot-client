@@ -1,4 +1,5 @@
 import { Expertise } from "@/src/types/api/expertise/expertise.interface";
+import { TenantType } from "@/src/types/api/tenant/tenant.interface";
 
 export type RootStackParamList = {
   home: undefined;
@@ -9,5 +10,6 @@ export type RootStackParamList = {
   profile: undefined;
   'professional-schedule': undefined;
   tenant: { tenantId: string };
+  scheduling: { tenantId: string; tenantType: TenantType; expertise: Expertise };
   checkEmail: undefined;
 };

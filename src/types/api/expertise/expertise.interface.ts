@@ -5,6 +5,7 @@ export interface Expertise {
   duration: number;
   capacity: number;
   categories: string[];
+  professionals: string[];
   active: boolean;
   price: Price | null;
 }
