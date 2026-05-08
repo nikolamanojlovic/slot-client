@@ -2,12 +2,39 @@ export type DateTimeType = "date" | "time" | "datetime";
 
 export const CURRENT_YEAR = new Date().getFullYear();
 
-export const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+export const DAYS_OF_WEEK = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
 ];
 
+export const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+// Sun-first 2-char labels used in calendar grid
 export const DAY_LABELS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+// Derived 3-char labels keyed by backend enum value
+const DAY_SHORT_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+export const DAY_OF_WEEK_LABELS: Record<string, string> = Object.fromEntries(
+  DAYS_OF_WEEK.map((d, i) => [d, DAY_SHORT_NAMES[i]]),
+);
 
 export const getMondayDateOfCurrentWeek = (): Date => {
   const today = new Date();

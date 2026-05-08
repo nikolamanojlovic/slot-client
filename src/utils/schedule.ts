@@ -2,8 +2,15 @@ import { DayResponse } from "@/src/api/scheduleTemplates";
 
 export type DayPeriod = "morning" | "afternoon" | "evening";
 
+export const formatTimeRange = (
+  start: string | null | undefined,
+  end: string | null | undefined,
+): string => {
+  if (!start || !end) return "—";
+  return `${start.slice(0, 5)} - ${end.slice(0, 5)}`;
+};
+
 const parseHour = (time: string): number => {
-  // supports HH:mm or HH:mm:ss
   return parseInt(time.split(":")[0], 10);
 };
 
@@ -23,13 +30,17 @@ export const getDominantPeriod = (days: DayResponse[]): DayPeriod | null => {
     evening: 0,
   };
 
+  let workingDays = 0;
   for (const day of days) {
     if (!day.startTime) continue;
+    workingDays++;
     const period = getPeriod(parseHour(day.startTime));
     if (period) counts[period]++;
   }
 
-  const threshold = days.length * 0.6;
+  if (workingDays === 0) return null;
+
+  const threshold = workingDays * 0.6;
 
   for (const period of Object.keys(counts) as DayPeriod[]) {
     if (counts[period] >= threshold) return period;

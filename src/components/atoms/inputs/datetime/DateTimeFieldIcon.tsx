@@ -12,10 +12,11 @@ const icon: Record<DateTimeType, typeof CalendarDays> = {
 interface Props {
   mode: DateTimeType;
   style?: ViewStyle;
+  size?: "xs" | "sm";
 }
 
-const DateTimeFieldIcon = ({ mode, style }: Props) => (
-  <Icon as={icon[mode]} size="sm" className="text-background-500" style={style} />
+const DateTimeFieldIcon = ({ mode, style, size = "sm" }: Props) => (
+  <Icon as={icon[mode]} size={size} className="text-background-500" style={style} />
 );
 
 export default DateTimeFieldIcon;

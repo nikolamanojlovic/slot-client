@@ -1,6 +1,7 @@
 import api from "../lib/axios";
 
 export interface ScheduleTemplate {
+  id: string;
   anchorDate: string; // ISO date: YYYY-MM-DD
   repeatFactor: number;
   weeks: WeekResponse[];
@@ -33,6 +34,29 @@ export const getScheduleTemplate = async (): Promise<ScheduleTemplate> => {
   return data;
 };
 
+export interface UpdateScheduleTemplateRequest {
+  anchorDate?: string;
+  repeatFactor?: number;
+  weekOrder?: number[];
+}
+
+export const updateScheduleTemplate = async (
+  templateId: string,
+  body: UpdateScheduleTemplateRequest,
+): Promise<ScheduleTemplate> => {
+  const { data } = await api.patch<ScheduleTemplate>(`/schedules/templates/${templateId}`, body);
+  return data;
+};
+
+export const deleteScheduleTemplateWeek = async (templateId: string, weekIndex: number): Promise<void> => {
+  await api.delete(`/schedules/templates/${templateId}/weeks/${weekIndex}`);
+};
+
+export const addScheduleTemplateWeek = async (templateId: string): Promise<ScheduleTemplate> => {
+  const { data } = await api.post<ScheduleTemplate>(`/schedules/templates/${templateId}/weeks`);
+  return data;
+};
+
 export const createScheduleTemplate = async (
   body: CreateScheduleTemplateRequest,
 ): Promise<ScheduleTemplate> => {
@@ -41,4 +65,29 @@ export const createScheduleTemplate = async (
     body,
   );
   return data;
+};
+
+export interface UpdateWeekDayRequest {
+  dayOfWeek: string;
+  startTime: string | null;
+  endTime: string | null;
+}
+
+export interface UpdateWeekBreakRequest {
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface UpdateScheduleTemplateWeekRequest {
+  days: UpdateWeekDayRequest[];
+  breaks: UpdateWeekBreakRequest[];
+}
+
+export const updateScheduleTemplateWeek = async (
+  templateId: string,
+  weekIndex: number,
+  body: UpdateScheduleTemplateWeekRequest,
+): Promise<void> => {
+  await api.put(`/schedules/templates/${templateId}/weeks/${weekIndex}`, body);
 };

@@ -12,9 +12,10 @@ interface Props {
   title: string;
   children: React.ReactNode;
   showBack?: boolean;
+  rightAction?: React.ReactNode;
 }
 
-const BasicNavigationLayout = ({ title, children, showBack = true }: Props) => {
+const BasicNavigationLayout = ({ title, children, showBack = true, rightAction }: Props) => {
   const user = useUserStore((s) => s.user);
   const isProfessional = user?.role === UserRole.PROFESSIONAL;
   const navigation = useAppNavigation();
@@ -44,7 +45,9 @@ const BasicNavigationLayout = ({ title, children, showBack = true }: Props) => {
           >
             {title}
           </H4>
-          <View style={{ width: 32 }} />
+          <View style={{ width: 32, alignItems: "flex-end", justifyContent: "center" }}>
+            {rightAction}
+          </View>
         </View>
       </View>
       <View className="flex-1 pr-3 pl-3">{children}</View>
