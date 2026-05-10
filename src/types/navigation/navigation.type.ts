@@ -10,6 +10,7 @@ export type RootStackParamList = {
   profile: undefined;
   'professional-schedule': undefined;
   'professional-schedule-week': { week: import("@/src/api/scheduleTemplates").WeekResponse; templateId: string };
+  'professional-analytics': undefined;
   tenant: { tenantId: string };
   scheduling: { tenantId: string; tenantType: TenantType; expertise: Expertise };
   checkEmail: undefined;

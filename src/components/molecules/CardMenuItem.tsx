@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/icon";
 import { colors } from "@/src/constants/colors";
 import { cardStyle } from "@/src/constants/styles";
 
-const MenuItem = ({
+const CardMenuItem = ({
   label,
   icon,
   onPress,
@@ -27,4 +27,4 @@ const MenuItem = ({
   </Pressable>
 );
 
-export default MenuItem;
+export default CardMenuItem;
