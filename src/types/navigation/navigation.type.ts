@@ -12,6 +12,6 @@ export type RootStackParamList = {
   'professional-schedule-week': { week: import("@/src/api/scheduleTemplates").WeekResponse; templateId: string };
   'professional-analytics': undefined;
   tenant: { tenantId: string };
-  scheduling: { tenantId: string; tenantType: TenantType; expertise: Expertise };
+  scheduling: { tenantId: string; tenantName: string; tenantType: TenantType; expertise: Expertise };
   checkEmail: undefined;
 };

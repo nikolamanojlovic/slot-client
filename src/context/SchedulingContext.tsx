@@ -10,20 +10,25 @@ export interface SlotOption {
 
 interface SchedulingState {
   tenantId: string;
+  tenantName: string;
   tenantType: TenantType;
   expertise: Expertise;
   professionalId: string | null;
+  professionalName: string | null;
   selectedDate: string | null;
   selectedSlot: SlotOption | null;
-  setProfessionalId: (id: string) => void;
+  bookingId: string | null;
+  setProfessional: (id: string, name: string) => void;
   setSelectedDate: (date: string) => void;
   setSelectedSlot: (slot: SlotOption | null) => void;
+  setBookingId: (id: string) => void;
 }
 
 const SchedulingContext = createContext<SchedulingState | null>(null);
 
 interface SchedulingProviderProps {
   tenantId: string;
+  tenantName: string;
   tenantType: TenantType;
   expertise: Expertise;
   children: React.ReactNode;
@@ -31,6 +36,7 @@ interface SchedulingProviderProps {
 
 export const SchedulingProvider = ({
   tenantId,
+  tenantName,
   tenantType,
   expertise,
   children,
@@ -38,21 +44,32 @@ export const SchedulingProvider = ({
   const [professionalId, setProfessionalId] = useState<string | null>(
     tenantType === TenantType.INDIVIDUAL ? (expertise.professionals[0] ?? null) : null,
   );
+  const [professionalName, setProfessionalName] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
+  const [bookingId, setBookingId] = useState<string | null>(null);
+
+  const setProfessional = (id: string, name: string) => {
+    setProfessionalId(id);
+    setProfessionalName(name);
+  };
 
   return (
     <SchedulingContext.Provider
       value={{
         tenantId,
+        tenantName,
         tenantType,
         expertise,
         professionalId,
+        professionalName,
         selectedDate,
         selectedSlot,
-        setProfessionalId,
+        bookingId,
+        setProfessional,
         setSelectedDate,
         setSelectedSlot,
+        setBookingId,
       }}
     >
       {children}

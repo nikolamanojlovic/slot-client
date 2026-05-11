@@ -12,7 +12,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SchedulingStackParamList } from "@/src/navigation/SchedulingStack";
 
 const SchedulingSelectProfessionalScreen = () => {
-  const { tenantId, expertise, setProfessionalId } = useScheduling();
+  const { tenantId, expertise, setProfessional } = useScheduling();
   const rootNavigation = useAppNavigation();
   const navigation = useNavigation<NativeStackNavigationProp<SchedulingStackParamList>>();
 
@@ -23,7 +23,7 @@ const SchedulingSelectProfessionalScreen = () => {
   });
 
   const handleSelect = (professional: ProfessionalUser) => {
-    setProfessionalId(professional.externalId);
+    setProfessional(professional.externalId, `${professional.firstName} ${professional.lastName}`);
     navigation.navigate("select-date");
   };
 

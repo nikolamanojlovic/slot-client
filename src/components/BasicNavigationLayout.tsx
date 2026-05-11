@@ -12,10 +12,11 @@ interface Props {
   title: string;
   children: React.ReactNode;
   showBack?: boolean;
+  onBack?: () => void;
   rightAction?: React.ReactNode;
 }
 
-const BasicNavigationLayout = ({ title, children, showBack = true, rightAction }: Props) => {
+const BasicNavigationLayout = ({ title, children, showBack = true, onBack, rightAction }: Props) => {
   const user = useUserStore((s) => s.user);
   const isProfessional = user?.role === UserRole.PROFESSIONAL;
   const navigation = useAppNavigation();
@@ -26,7 +27,7 @@ const BasicNavigationLayout = ({ title, children, showBack = true, rightAction }
         <View className="flex-row items-center px-3 pt-2 pb-1">
           {showBack ? (
             <Pressable
-              onPress={() => navigation.goBack()}
+              onPress={() => onBack ? onBack() : navigation.goBack()}
               style={{
                 width: 32,
                 height: 32,

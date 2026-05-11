@@ -27,8 +27,11 @@ export const MONTHS = [
   "December",
 ];
 
-// Sun-first 2-char labels used in calendar grid
-export const DAY_LABELS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+// Mon-first 3-char labels — index with (getDay() + 6) % 7
+export const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+// 3-char month labels (getMonth() index)
+export const MONTH_SHORT_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // Derived 3-char labels keyed by backend enum value
 const DAY_SHORT_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];

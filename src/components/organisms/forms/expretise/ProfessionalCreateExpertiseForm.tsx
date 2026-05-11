@@ -294,8 +294,11 @@ const ProfessionalCreateExpertiseForm = ({
         <CheckboxIndicator>
           <CheckboxIcon as={Check} />
         </CheckboxIndicator>
-        <CheckboxLabel style={{ color: colors.primary }} className="font-semibold text-xs">
-          Make service available for booking
+        <CheckboxLabel
+          style={{ color: colors.primary }}
+          className="font-semibold text-xs"
+        >
+          Make service available for scheduling
         </CheckboxLabel>
       </Checkbox>
 

@@ -48,7 +48,7 @@ const DatePicker = ({
   );
 
   const daysInMonth = new Date(Number(year), month + 1, 0).getDate();
-  const firstDayOfWeek = new Date(Number(year), month, 1).getDay();
+  const firstDayOfWeek = (new Date(Number(year), month, 1).getDay() + 6) % 7;
   const filled = Array.from({ length: firstDayOfWeek + daysInMonth }, (_, i) =>
     i < firstDayOfWeek ? null : i - firstDayOfWeek + 1,
   );
@@ -147,7 +147,8 @@ const DatePicker = ({
         ))}
         {cells.map((day, i) => {
           const date = day !== null ? new Date(Number(year), month, day) : null;
-          const disabled = date !== null && isDisabled ? isDisabled(date) : false;
+          const disabled =
+            date !== null && isDisabled ? isDisabled(date) : false;
           return (
             <View
               key={i}
@@ -168,7 +169,8 @@ const DatePicker = ({
                     borderRadius: 16,
                     alignItems: "center",
                     justifyContent: "center",
-                    backgroundColor: selectedDay === day ? colors.primary : "transparent",
+                    backgroundColor:
+                      selectedDay === day ? colors.primary : "transparent",
                     opacity: disabled ? 0.3 : 1,
                   }}
                 >

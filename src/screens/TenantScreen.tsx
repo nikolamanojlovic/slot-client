@@ -116,7 +116,7 @@ const TenantScreen = ({ route }: Props) => {
               <TenantExpertiseItem
                 key={expertise.id}
                 expertise={expertise}
-                onPress={() => navigation.navigate("scheduling", { expertise, tenantId, tenantType: tenantData!.type })}
+                onPress={() => navigation.navigate("scheduling", { expertise, tenantId, tenantName: tenantData!.name, tenantType: tenantData!.type })}
               />
             ))}
           </VStack>
