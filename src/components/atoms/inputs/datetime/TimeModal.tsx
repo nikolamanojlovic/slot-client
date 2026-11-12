@@ -39,7 +39,7 @@ const TimeModal = ({ isOpen, value, onChange, onClose }: Props) => {
       <ModalContent>
         <ModalHeader>
           <HStack className="flex-1 items-center justify-center">
-            <HStack style={{ borderWidth: 1, borderColor: "#e5e7eb", borderRadius: 6, overflow: "hidden" }}>
+            <HStack style={{ borderWidth: 1, borderColor: colors.border, borderRadius: 6, overflow: "hidden" }}>
               {STEPS.map((s, i) => (
                 <Pressable
                   key={s}
@@ -47,16 +47,16 @@ const TimeModal = ({ isOpen, value, onChange, onClose }: Props) => {
                   style={{
                     paddingHorizontal: 8,
                     paddingVertical: 4,
-                    backgroundColor: step === s ? colors.primary : "#f9fafb",
+                    backgroundColor: step === s ? colors.primary : colors.surfaceMuted,
                     borderLeftWidth: i > 0 ? 1 : 0,
-                    borderLeftColor: "#e5e7eb",
+                    borderLeftColor: colors.border,
                   }}
                 >
                   <Text
                     style={{
                       fontSize: 11,
                       fontWeight: "600",
-                      color: step === s ? "#fff" : "#6b7280",
+                      color: step === s ? colors.white : colors.textMuted,
                     }}
                   >
                     {s}
@@ -71,7 +71,7 @@ const TimeModal = ({ isOpen, value, onChange, onClose }: Props) => {
         </ModalBody>
         <ModalFooter>
           <HStack space="sm" className="flex-1 justify-end">
-            <Button style={{ backgroundColor: "#4B5563" }} onPress={onClose}>
+            <Button style={{ backgroundColor: colors.neutral }} onPress={onClose}>
               <ButtonText>Cancel</ButtonText>
             </Button>
             <Button style={{ backgroundColor: colors.primary }} onPress={handleOk}>

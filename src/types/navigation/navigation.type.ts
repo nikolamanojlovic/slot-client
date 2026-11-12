@@ -14,4 +14,6 @@ export type RootStackParamList = {
   tenant: { tenantId: string };
   scheduling: { tenantId: string; tenantName: string; tenantType: TenantType; expertise: Expertise };
   checkEmail: undefined;
+  messages: undefined;
+  thread: { threadId: string };
 };

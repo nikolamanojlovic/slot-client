@@ -9,10 +9,14 @@ const ERROR_CODE_MESSAGES: Record<string, string> = {
 export const useErrorToast = () => {
   const toast = useToast();
 
-  const showError = (error: AxiosError<ErrorResponse>) => {
+  // overrides: per-call messages by error code, for codes whose meaning depends on the caller
+  const showError = (
+    error: AxiosError<ErrorResponse>,
+    overrides?: Record<string, string>,
+  ) => {
     const code = error.response?.data?.code;
     const message =
-      (code && ERROR_CODE_MESSAGES[code]) ??
+      (code && (overrides?.[code] ?? ERROR_CODE_MESSAGES[code])) ??
       error.response?.data?.message ??
       "Something went wrong.";
 

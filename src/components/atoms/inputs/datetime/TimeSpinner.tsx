@@ -57,7 +57,7 @@ const SpinnerColumn = ({ value, max, onIncrement, onDecrement, onChange }: Spinn
           <Icon
             as={ChevronUp}
             size="xl"
-            style={{ color: pressed ? colors.primary : "#6b7280" }}
+            style={{ color: pressed ? colors.primary : colors.textMuted }}
           />
         )}
       </Pressable>
@@ -68,8 +68,8 @@ const SpinnerColumn = ({ value, max, onIncrement, onDecrement, onChange }: Spinn
           height: 64,
           borderRadius: 8,
           borderWidth: 1,
-          borderColor: isFocused ? colors.primary : "#e5e7eb",
-          backgroundColor: "#f9fafb",
+          borderColor: isFocused ? colors.primary : colors.border,
+          backgroundColor: colors.surfaceMuted,
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -100,7 +100,7 @@ const SpinnerColumn = ({ value, max, onIncrement, onDecrement, onChange }: Spinn
           <Icon
             as={ChevronDown}
             size="xl"
-            style={{ color: pressed ? colors.primary : "#6b7280" }}
+            style={{ color: pressed ? colors.primary : colors.textMuted }}
           />
         )}
       </Pressable>
@@ -136,7 +136,7 @@ const TimeSpinner = ({ value, step = 1, onChange }: Props) => {
         onChange={(h) => update(h, minutes)}
       />
 
-      <Text style={{ fontSize: 28, fontWeight: "700", color: "#374151", marginBottom: 2 }}>
+      <Text style={{ fontSize: 28, fontWeight: "700", color: colors.text, marginBottom: 2 }}>
         :
       </Text>
 

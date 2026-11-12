@@ -16,7 +16,7 @@ const PriceLabel = ({ price }: Props) => {
   }
 
   return (
-    <Text size="sm" className="font-medium text-error-600">
+    <Text size="sm" className="font-medium" style={{ color: colors.error }}>
       NOT PROVIDED
     </Text>
   );

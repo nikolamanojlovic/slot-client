@@ -49,7 +49,7 @@ const ExplorePreview = ({ preview }: ExplorePreviewProps) => {
             />
           ))
         ) : (
-          <Text size="sm" className="text-typography-400">
+          <Text size="sm" style={{ color: colors.textMuted }}>
             No expertises
           </Text>
         )}

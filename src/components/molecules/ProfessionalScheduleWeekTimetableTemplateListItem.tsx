@@ -45,7 +45,9 @@ const ProfessionalScheduleWeekTimetableTemplateListItem = ({
           value={from}
           onChange={onFromChange}
         />
-        <Text className="text-xs text-typography-500">-</Text>
+        <Text className="text-xs" style={{ color: colors.textMuted }}>
+          -
+        </Text>
         <DateTimeField mode="time" size="sm" value={to} onChange={onToChange} />
       </HStack>
       <Pressable
@@ -54,7 +56,7 @@ const ProfessionalScheduleWeekTimetableTemplateListItem = ({
         style={{ width: 16, alignItems: "center" }}
       >
         {type === "break" && (
-          <Icon as={Trash2} size="xs" className="text-error-600" />
+          <Icon as={Trash2} size="xs" color={colors.error} />
         )}
       </Pressable>
     </HStack>

@@ -153,7 +153,7 @@ export const SignUpForm = () => {
             onChange={(val) => handleChangeText("isProfessional", val)}
             size="md"
           >
-            <CheckboxIndicator className="text-white">
+            <CheckboxIndicator>
               <CheckboxIcon as={CheckIcon} />
             </CheckboxIndicator>
             <CheckboxLabel>

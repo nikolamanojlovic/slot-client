@@ -14,6 +14,7 @@ import { useUserStore } from "@/src/stores/useUserStore";
 import { Expertise } from "@/src/types/api/expertise/expertise.interface";
 import ProfessionalExpertiseItem from "@/src/components/molecules/ProfessionalExpertiseItem";
 import { useAppNavigation } from "@/src/hooks/useAppNavigation";
+import { colors } from "@/src/constants/colors";
 
 const ProfessionalExpertisesScreen = () => {
   const user = useUserStore((s) => s.user);
@@ -45,7 +46,7 @@ const ProfessionalExpertisesScreen = () => {
     <BasicNavigationLayout title="Expertises" showBack={false}>
       <VStack className="h-full mb-3">
         {isLoading && (
-          <Spinner className="flex-1 m-0" size="large" color="black" />
+          <Spinner className="flex-1 m-0" size="large" color={colors.black} />
         )}
         <Fab size="md" placement="bottom right" onPress={handleCreate}>
           <FabIcon as={Plus} />

@@ -68,7 +68,7 @@ const SchedulingSelectDateScreen = () => {
   const { data: slotsData, isLoading } = useQuery({
     queryKey: ["slots", professionalId, dateStr, expertise.duration],
     queryFn: () =>
-      getSlots(professionalId!, dateStr, dateStr, expertise.duration),
+      getSlots(professionalId!, expertise.id, dateStr, dateStr, expertise.duration),
     enabled: !!professionalId,
   });
 
@@ -123,10 +123,10 @@ const SchedulingSelectDateScreen = () => {
 
         <View className="flex-1">
           {isLoading ? (
-            <Spinner size="large" color="black" className="mt-8" />
+            <Spinner size="large" color={colors.black} className="mt-8" />
           ) : !buckets || BUCKET_ORDER.every((b) => !buckets[b]?.length) ? (
             <View className="flex-1 items-center justify-center">
-              <Text style={{ color: "#888", fontSize: 15 }}>
+              <Text style={{ color: colors.textMuted, fontSize: 15 }}>
                 No available slots
               </Text>
             </View>
@@ -166,14 +166,14 @@ const SchedulingSelectDateScreen = () => {
                               borderWidth: 1,
                               borderColor: isSelected
                                 ? colors.primary
-                                : "#d1d5db",
+                                : colors.borderStrong,
                             }}
                           >
                             <Text
                               style={{
                                 fontSize: 13,
                                 fontWeight: "600",
-                                color: isSelected ? colors.primary : "#555",
+                                color: isSelected ? colors.primary : colors.textSecondary,
                               }}
                             >
                               {slot.from.slice(0, 5)}
@@ -193,7 +193,7 @@ const SchedulingSelectDateScreen = () => {
           onPress={handleContinue}
           isDisabled={!selectedSlot || isBooking}
           className="mb-4"
-          style={{ backgroundColor: selectedSlot ? colors.primary : "#ccc" }}
+          style={{ backgroundColor: selectedSlot ? colors.primary : colors.disabled }}
         >
           <ButtonText style={{ color: colors.white }}>Continue</ButtonText>
         </Button>

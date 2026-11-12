@@ -10,6 +10,7 @@ import ProfessionalSelectItem from "@/src/components/molecules/ProfessionalSelec
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SchedulingStackParamList } from "@/src/navigation/SchedulingStack";
+import { colors } from "@/src/constants/colors";
 
 const SchedulingSelectProfessionalScreen = () => {
   const { tenantId, expertise, setProfessional } = useScheduling();
@@ -34,7 +35,7 @@ const SchedulingSelectProfessionalScreen = () => {
       onCancel={() => rootNavigation.navigate("tenant", { tenantId })}
     >
       {isLoading ? (
-        <Spinner className="flex-1" size="large" color="black" />
+        <Spinner className="flex-1" size="large" color={colors.black} />
       ) : (
         <ScrollView className="pt-2">
           <VStack space="sm">

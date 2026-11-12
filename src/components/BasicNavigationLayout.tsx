@@ -1,4 +1,5 @@
 import { View, Pressable } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import NavigationBar from "./organisms/navigation/NavigationBar";
 import ProfessionalNavigationBar from "./organisms/navigation/ProfessionalNavigationBar";
 import { useUserStore } from "@/src/stores/useUserStore";
@@ -51,7 +52,15 @@ const BasicNavigationLayout = ({ title, children, showBack = true, onBack, right
           </View>
         </View>
       </View>
-      <View className="flex-1 pr-3 pl-3">{children}</View>
+      <View className="flex-1 pr-3 pl-3">
+        {children}
+        {/* Content fades out as it scrolls up under the header */}
+        <LinearGradient
+          colors={[colors.screen, colors.screenTransparent]}
+          pointerEvents="none"
+          style={{ position: "absolute", top: 0, left: 0, right: 0, height: 16 }}
+        />
+      </View>
       {isProfessional ? <ProfessionalNavigationBar /> : <NavigationBar />}
     </View>
   );

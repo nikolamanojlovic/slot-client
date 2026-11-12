@@ -21,7 +21,7 @@ interface Props {
 }
 
 const Divider = () => (
-  <View style={{ height: 1, backgroundColor: "#f0f0f0", marginVertical: 12 }} />
+  <View style={{ height: 1, backgroundColor: colors.border, marginVertical: 12 }} />
 );
 
 const Row = ({ label, value }: { label: string; value: string }) => (
@@ -32,8 +32,8 @@ const Row = ({ label, value }: { label: string; value: string }) => (
       paddingVertical: 4,
     }}
   >
-    <Text style={{ fontSize: 14, color: "#888" }}>{label}</Text>
-    <Text style={{ fontSize: 14, color: "#333", fontWeight: "500" }}>
+    <Text style={{ fontSize: 14, color: colors.textMuted }}>{label}</Text>
+    <Text style={{ fontSize: 14, color: colors.text, fontWeight: "500" }}>
       {value}
     </Text>
   </View>

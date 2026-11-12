@@ -140,7 +140,7 @@ const DatePicker = ({
               paddingVertical: 4,
             }}
           >
-            <Text style={{ fontSize: 11, fontWeight: "600", color: "#9ca3af" }}>
+            <Text style={{ fontSize: 11, fontWeight: "600", color: colors.textMuted }}>
               {d}
             </Text>
           </View>
@@ -178,7 +178,7 @@ const DatePicker = ({
                     style={{
                       fontSize: 13,
                       fontWeight: "500",
-                      color: selectedDay === day ? "#fff" : colors.primary,
+                      color: selectedDay === day ? colors.white : colors.primary,
                     }}
                   >
                     {day}

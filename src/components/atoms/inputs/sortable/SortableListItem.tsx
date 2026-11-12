@@ -17,21 +17,22 @@ const SortableListItem = ({ children, canMoveUp, canMoveDown, onMoveUp, onMoveDo
   return (
     <HStack
       space="sm"
-      className="items-center p-3 rounded-lg border border-outline-200 bg-white"
+      className="items-center p-3 rounded-lg border"
+      style={{ borderColor: colors.border, backgroundColor: colors.surface }}
     >
       <VStack style={{ width: 20 }}>
         <Pressable onPress={onMoveUp} disabled={!canMoveUp} hitSlop={4}>
           <Icon
             as={ChevronUp}
             size="xs"
-            style={{ color: canMoveUp ? colors.primary : "#d1d5db" }}
+            style={{ color: canMoveUp ? colors.primary : colors.disabled }}
           />
         </Pressable>
         <Pressable onPress={onMoveDown} disabled={!canMoveDown} hitSlop={4}>
           <Icon
             as={ChevronDown}
             size="xs"
-            style={{ color: canMoveDown ? colors.primary : "#d1d5db" }}
+            style={{ color: canMoveDown ? colors.primary : colors.disabled }}
           />
         </Pressable>
       </VStack>

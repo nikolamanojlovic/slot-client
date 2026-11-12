@@ -67,3 +67,17 @@ export const formatByMode = (date: Date, mode: DateTimeType): string => {
   if (mode === "time") return formatTime(date);
   return formatDatetime(date);
 };
+
+// Device-locale short date, e.g. "Fri, 13 Nov"
+export const formatDayMonth = (date: Date): string =>
+  date.toLocaleDateString(undefined, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+
+// "2026-11-13" → Date in local time (new Date("2026-11-13") would be UTC midnight)
+export const parseDateISO = (value: string): Date => {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};

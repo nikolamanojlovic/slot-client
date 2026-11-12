@@ -102,7 +102,7 @@ const ProfessionalScheduleWeekScreen = () => {
           {isEditing && (
             <Button
               className="mt-4 mb-3"
-              style={{ backgroundColor: isSaving ? "#9ca3af" : colors.primary }}
+              style={{ backgroundColor: isSaving ? colors.disabled : colors.primary }}
               isDisabled={isSaving}
               onPress={() => saveWeek()}
             >

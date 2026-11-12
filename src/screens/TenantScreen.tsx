@@ -15,7 +15,10 @@ import {
   ExpertiseResponse,
   Expertise,
 } from "@/src/types/api/expertise/expertise.interface";
-import { TenantResponse } from "@/src/types/api/tenant/tenant.interface";
+import {
+  TenantResponse,
+  TenantType,
+} from "@/src/types/api/tenant/tenant.interface";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/src/types/common/error.interface";
 import { getExpertise } from "@/src/api/expertise";
@@ -23,6 +26,10 @@ import { getTenant } from "@/src/api/tenant";
 import { useCategoryTree } from "@/src/hooks/useCategoryTree";
 import { useAppNavigation } from "@/src/hooks/useAppNavigation";
 import { colors } from "@/src/constants/colors";
+import { Pressable } from "@/components/ui/pressable";
+import { MessageCircle } from "lucide-react-native";
+import { useUserStore } from "@/src/stores/useUserStore";
+import { useMessageProfessional } from "@/src/hooks/useMessageProfessional";
 
 type Props = NativeStackScreenProps<RootStackParamList, "tenant">;
 
@@ -79,6 +86,17 @@ const TenantScreen = ({ route }: Props) => {
 
   const isLoading = isLoadingExpertise || isLoadingTenant;
 
+  const user = useUserStore((s) => s.user);
+  const { messageProfessional, isPending: isStarting } =
+    useMessageProfessional();
+  // An INDIVIDUAL tenant is a single professional; same rule as SchedulingContext
+  const professionalId =
+    tenantData?.type === TenantType.INDIVIDUAL
+      ? expertiseData?.content[0]?.professionals[0]
+      : undefined;
+  const canMessage =
+    !!user && !!professionalId && professionalId !== user.externalId;
+
   const grouped = useMemo(
     () => groupBySubcategory(expertiseData?.content ?? [], categoryMap),
     [expertiseData, categoryMap],
@@ -95,14 +113,23 @@ const TenantScreen = ({ route }: Props) => {
             {tenantData?.name ?? tenantId}
           </AvatarFallbackText>
         </Avatar>
-        <VStack>
-          <Heading size="2xl" className="text-left text-primary-500">
+        <VStack className="flex-1">
+          <Heading size="2xl" className="text-left" style={{ color: colors.primary }}>
             {tenantData?.name ?? tenantId}
           </Heading>
           <Rating />
         </VStack>
+        {canMessage && (
+          <Pressable
+            onPress={() => messageProfessional(professionalId)}
+            disabled={isStarting}
+            style={{ padding: 8, opacity: isStarting ? 0.4 : 1 }}
+          >
+            <MessageCircle size={26} color={colors.primary} />
+          </Pressable>
+        )}
       </HStack>
-      {isLoading && <Spinner size="large" color="black" />}
+      {isLoading && <Spinner size="large" color={colors.black} />}
       <VStack space="md">
         {grouped.map(({ subcategoryId, subcategoryName, expertises }) => (
           <VStack key={subcategoryId} space="sm">

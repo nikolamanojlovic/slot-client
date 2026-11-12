@@ -100,7 +100,7 @@ const ProfessionalScheduleScreenOld = () => {
     <BasicNavigationLayout title="Schedule" showBack={true}>
       <VStack className="mt-3 flex-1">
         {isLoading ? (
-          <Spinner className="flex-1" size="large" color="black" />
+          <Spinner className="flex-1" size="large" color={colors.black} />
         ) : (
           <View style={{ flex: 1 }}>
             <ProfessionalScheduleTable rows={rows} onUpdate={update} />

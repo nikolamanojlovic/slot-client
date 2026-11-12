@@ -4,6 +4,7 @@ import { Text } from "@/components/ui/text";
 import { formatByMode } from "@/src/utils/date";
 import DateTimeFieldIcon from "./DateTimeFieldIcon";
 import DateTimeFieldModal from "./DateTimeFieldModal";
+import { colors } from "@/src/constants/colors";
 
 type CommonProps = {
   value: Date;
@@ -37,12 +38,16 @@ const DateTimeField = (props: Props) => {
     <>
       <Pressable
         onPress={() => setIsOpen(true)}
-        className={`border border-background-300 rounded px-2 flex-row items-center justify-between bg-white ${size === "sm" ? "h-6" : "h-10 px-3"}`}
-        style={size === "sm" ? { width: 70 } : undefined}
+        className={`border rounded px-2 flex-row items-center justify-between ${size === "sm" ? "h-6" : "h-10 px-3"}`}
+        style={{
+          borderColor: colors.borderStrong,
+          backgroundColor: colors.surface,
+          ...(size === "sm" ? { width: 70 } : {}),
+        }}
       >
         <Text
-          className={`text-typography-900 flex-shrink overflow-hidden whitespace-nowrap ${size === "sm" ? "text-xs" : "text-sm"}`}
-          style={{ textOverflow: "clip" } as any}
+          className={`flex-shrink overflow-hidden whitespace-nowrap ${size === "sm" ? "text-xs" : "text-sm"}`}
+          style={{ color: colors.text, textOverflow: "clip" } as any}
         >
           {formatByMode(value, mode)}
         </Text>

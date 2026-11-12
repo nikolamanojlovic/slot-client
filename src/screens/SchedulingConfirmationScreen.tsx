@@ -7,24 +7,31 @@ import BasicNavigationLayout from "@/src/components/BasicNavigationLayout";
 import { Text } from "@/components/ui/text";
 import { Spinner } from "@/components/ui/spinner";
 import { colors } from "@/src/constants/colors";
-import { CheckCircle } from "lucide-react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getBooking } from "@/src/api/bookings";
-import { Send } from "lucide-react";
+import { Send } from "lucide-react-native";
+import { Button, ButtonText } from "@/components/ui/button";
+import { useMessageProfessional } from "@/src/hooks/useMessageProfessional";
 
 type Props = NativeStackScreenProps<SchedulingStackParamList, "confirmation">;
 
 const Row = ({ label, value }: { label: string; value: string }) => (
   <View className="flex-row justify-between py-2">
-    <Text className="text-sm text-gray-400">{label}</Text>
-    <Text className="text-sm font-medium text-gray-800">{value}</Text>
+    <Text className="text-sm" style={{ color: colors.textMuted }}>
+      {label}
+    </Text>
+    <Text className="text-sm font-medium" style={{ color: colors.text }}>
+      {value}
+    </Text>
   </View>
 );
 
 const SchedulingConfirmationScreen = (_: Props) => {
-  const { tenantName, expertise, professionalName, bookingId } =
+  const { tenantName, expertise, professionalId, professionalName, bookingId } =
     useScheduling();
   const rootNavigation = useAppNavigation();
+  const { messageProfessional, isPending: isStarting } =
+    useMessageProfessional();
 
   const { data: booking, isLoading } = useQuery({
     queryKey: ["booking", bookingId],
@@ -39,7 +46,7 @@ const SchedulingConfirmationScreen = (_: Props) => {
     >
       <View className="flex-1">
         {isLoading || !booking ? (
-          <Spinner size="large" color="black" className="flex-1" />
+          <Spinner size="large" color={colors.black} className="flex-1" />
         ) : (
           <>
             <View className="items-center py-6">
@@ -67,6 +74,19 @@ const SchedulingConfirmationScreen = (_: Props) => {
         )}
 
         <View className="flex-1" />
+
+        {professionalId && (
+          <Button
+            onPress={() => messageProfessional(professionalId)}
+            isDisabled={isStarting}
+            className="mb-4"
+            style={{ backgroundColor: isStarting ? colors.disabled : colors.primary }}
+          >
+            <ButtonText style={{ color: colors.white }}>
+              Message {professionalName ?? tenantName}
+            </ButtonText>
+          </Button>
+        )}
       </View>
     </BasicNavigationLayout>
   );

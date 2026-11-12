@@ -5,7 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "./src/types/navigation/navigation.type";
-import { NavigationContainer } from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./src/screens/HomeScreen";
 import ExploreScreen from "./src/screens/ExploreScreen";
 import TenantScreen from "./src/screens/TenantScreen";
@@ -15,19 +15,30 @@ import ProfessionalEditExpertiseScreen from "./src/screens/ProfessionalEditExper
 import AuthenticationScreen from "./src/screens/AuthenticationScreen";
 import CheckEmailScreen from "./src/screens/CheckEmailScreen";
 import { useAuthListener } from "./src/hooks/useAuthListener";
+import { useRealtime } from "./src/hooks/useRealtime";
 import { useUserStore } from "./src/stores/useUserStore";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import ProfessionalProfileScreen from "./src/screens/ProfessionalProfileScreen";
 import ProfessionalScheduleScreen from "./src/screens/ProfessionalScheduleScreen";
 import ProfessionalScheduleWeekScreen from "./src/screens/ProfessionalScheduleWeekScreen";
 import ProfessionalAnalyticsScreen from "./src/screens/ProfessionalAnalyticsScreen";
+import MessagesScreen from "./src/screens/MessagesScreen";
+import ThreadScreen from "./src/screens/ThreadScreen";
 import SchedulingStack from "./src/navigation/SchedulingStack";
 import { UserRole } from "./src/types/api/user/user.enum";
+import { colors } from "./src/constants/colors";
+
+// Screen background from colors.ts, so the header fade matches it
+const navigationTheme = {
+  ...DefaultTheme,
+  colors: { ...DefaultTheme.colors, background: colors.screen },
+};
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   useAuthListener();
+  useRealtime();
 
   const user = useUserStore((s) => s.user);
 
@@ -35,7 +46,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <GluestackUIProvider mode="light">
         <SafeAreaProvider>
-          <NavigationContainer>
+          <NavigationContainer theme={navigationTheme}>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               <Stack.Screen name="home" component={HomeScreen} />
               <Stack.Screen name="explore" component={ExploreScreen} />
@@ -51,6 +62,8 @@ export default function App() {
               <Stack.Screen name="professional-schedule-week" component={ProfessionalScheduleWeekScreen} />
               <Stack.Screen name="professional-analytics" component={ProfessionalAnalyticsScreen} />
               <Stack.Screen name="scheduling" component={SchedulingStack} />
+              <Stack.Screen name="messages" component={MessagesScreen} />
+              <Stack.Screen name="thread" component={ThreadScreen} />
               {!user ? (
                 <Stack.Screen name="profile" component={AuthenticationScreen} />
               ) : user.role === UserRole.PROFESSIONAL ? (

@@ -37,7 +37,7 @@ const DateModal = ({ isOpen, value, range = false, isDisabled, onChange, onClose
         </ModalBody>
         <ModalFooter>
           <HStack space="sm" className="flex-1 justify-end">
-            <Button style={{ backgroundColor: "#4B5563" }} onPress={onClose}>
+            <Button style={{ backgroundColor: colors.neutral }} onPress={onClose}>
               <ButtonText>Cancel</ButtonText>
             </Button>
             <Button style={{ backgroundColor: colors.primary }} onPress={handleOk}>

@@ -29,12 +29,13 @@ export const getAvailableSlots = async (
 
 export const getSlots = async (
   professionalExternalId: string,
+  expertiseId: string,
   from: string,
   to: string,
   duration: number,
 ): Promise<SlotsByDay> => {
   const { data } = await api.get<SlotsByDay>("/slots", {
-    params: { professionalExternalId, from, to, duration },
+    params: { professionalExternalId, expertiseId, from, to, duration },
   });
   return data;
 };

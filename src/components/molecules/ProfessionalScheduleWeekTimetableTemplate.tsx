@@ -230,8 +230,10 @@ const ProfessionalScheduleWeekTimetableTemplate = forwardRef<TimetableHandle, Pr
             <Pressable
               key={dow}
               onPress={() => isEditing && state.enabled && applyAndExpand(dow)}
-              className="rounded-lg border border-outline-200 bg-white p-3"
+              className="rounded-lg border p-3"
               style={({ pressed }) => ({
+                borderColor: colors.border,
+                backgroundColor: colors.surface,
                 opacity: isEditing && state.enabled && pressed ? 0.7 : 1,
               })}
             >
@@ -244,8 +246,10 @@ const ProfessionalScheduleWeekTimetableTemplate = forwardRef<TimetableHandle, Pr
                 </Text>
 
                 <VStack className="flex-1">
-                  <Text className="text-xs text-typography-500">Work</Text>
-                  <Text className="text-xs font-medium text-typography-800">
+                  <Text className="text-xs" style={{ color: colors.textMuted }}>
+                    Work
+                  </Text>
+                  <Text className="text-xs font-medium" style={{ color: colors.text }}>
                     {state.enabled
                       ? isExpanded
                         ? formatTimeRange(formatTime(pendingFrom), formatTime(pendingTo))
@@ -255,8 +259,10 @@ const ProfessionalScheduleWeekTimetableTemplate = forwardRef<TimetableHandle, Pr
                 </VStack>
 
                 <VStack className="flex-1">
-                  <Text className="text-xs text-typography-500">Break</Text>
-                  <Text className="text-xs font-medium text-typography-800">
+                  <Text className="text-xs" style={{ color: colors.textMuted }}>
+                    Break
+                  </Text>
+                  <Text className="text-xs font-medium" style={{ color: colors.text }}>
                     {state.enabled
                       ? isExpanded
                         ? hasBreak
@@ -271,7 +277,7 @@ const ProfessionalScheduleWeekTimetableTemplate = forwardRef<TimetableHandle, Pr
                   <Switch
                     value={state.enabled}
                     disabled={!isEditing}
-                    trackColor={{ true: colors.primary, false: "#d1d5db" }}
+                    trackColor={{ true: colors.primary, false: colors.borderStrong }}
                     onValueChange={() => { if (isEditing) toggleDay(dow); }}
                   />
                 </View>

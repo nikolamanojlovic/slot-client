@@ -42,7 +42,7 @@ const ProfessionalExpertiseItem = ({
           </HStack>
           <PriceLabel price={expertise.price} />
         </HStack>
-        <Text size="sm" className="text-typography-500">
+        <Text size="sm" style={{ color: colors.textMuted }}>
           {`${expertise.capacity} ${expertise.capacity === 1 ? "person" : "people"}, ${expertise.duration} min`}
         </Text>
         <HStack space="xs" className="flex-wrap mt-3">

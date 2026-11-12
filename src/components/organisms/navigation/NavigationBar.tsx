@@ -1,20 +1,19 @@
 import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
+import MessagesTabIcon from "@/src/components/atoms/MessagesTabIcon";
 import { useAppNavigation } from "@/src/hooks/useAppNavigation";
 import { useUserStore } from "@/src/stores/useUserStore";
 import { useNavigationState } from "@react-navigation/native";
 import {
   CalendarDays,
-  MessageCircle,
   Search,
   Store,
   User,
   UserX,
 } from "lucide-react";
 import { Pressable, View } from "react-native";
-
-const ACTIVE_COLOR = "#06392F";
+import { colors } from "@/src/constants/colors";
 
 const NavItem = ({
   active,
@@ -36,7 +35,7 @@ const NavItem = ({
         left: 0,
         right: 0,
         height: 2,
-        backgroundColor: active ? ACTIVE_COLOR : "transparent",
+        backgroundColor: active ? colors.primary : "transparent",
       }}
     />
     {children}
@@ -58,28 +57,31 @@ const NavigationBar = () => {
           active={currentRoute === "home"}
           onPress={() => navigation.navigate("home")}
         >
-          <Icon as={Store} size="xl" color="#06392F" />
+          <Icon as={Store} size="xl" color={colors.primary} />
         </NavItem>
         <NavItem
           active={currentRoute === "explore"}
           onPress={() => navigation.navigate("explore")}
         >
-          <Icon as={Search} size="xl" color="#06392F" />
+          <Icon as={Search} size="xl" color={colors.primary} />
         </NavItem>
         <NavItem>
-          <Icon as={CalendarDays} size="xl" color="#06392F" />
+          <Icon as={CalendarDays} size="xl" color={colors.primary} />
         </NavItem>
-        <NavItem>
-          <Icon as={MessageCircle} size="xl" color="#06392F" />
+        <NavItem
+          active={currentRoute === "messages"}
+          onPress={() => navigation.navigate("messages")}
+        >
+          <MessagesTabIcon />
         </NavItem>
         <NavItem
           active={currentRoute === "profile"}
           onPress={() => navigation.navigate("profile")}
         >
           {!!user ? (
-            <Icon as={User} size="xl" color="#06392F" />
+            <Icon as={User} size="xl" color={colors.primary} />
           ) : (
-            <Icon as={UserX} size="xl" color="#06392F" />
+            <Icon as={UserX} size="xl" color={colors.primary} />
           )}
         </NavItem>
       </HStack>

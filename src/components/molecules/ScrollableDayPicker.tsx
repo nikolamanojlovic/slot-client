@@ -80,7 +80,8 @@ const ScrollableDayPicker = ({
         <SelectTrigger variant="outline" size="md">
           <SelectInput
             placeholder="Month"
-            className="text-primary-500 font-semibold"
+            className="font-semibold"
+            style={{ color: colors.primary }}
           />
           <SelectIcon className="mr-3" as={ChevronDown} />
         </SelectTrigger>
@@ -119,17 +120,20 @@ const ScrollableDayPicker = ({
               ]}
             >
               <Text
-                className={`text-xs font-medium ${isActive ? "text-white" : "text-gray-400"}`}
+                className="text-xs font-medium"
+                style={{ color: isActive ? colors.white : colors.textMuted }}
               >
                 {DAY_LABELS[(date.getDay() + 6) % 7]}
               </Text>
               <Text
-                className={`text-base font-bold ${isActive ? "text-white" : "text-primary-500"}`}
+                className="text-base font-bold"
+                style={{ color: isActive ? colors.white : colors.primary }}
               >
                 {date.getDate()}
               </Text>
               <Text
-                className={`text-xs ${isActive ? "text-white" : "text-gray-400"}`}
+                className="text-xs"
+                style={{ color: isActive ? colors.white : colors.textMuted }}
               >
                 {MONTH_SHORT_LABELS[date.getMonth()]}
               </Text>

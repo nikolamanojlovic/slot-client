@@ -80,7 +80,7 @@ const ProfessionalScheduleScreen = () => {
     <BasicNavigationLayout title="Schedule" showBack={true}>
       <VStack className="mt-3 flex-1">
         {isLoading ? (
-          <Spinner className="flex-1" size="large" color="black" />
+          <Spinner className="flex-1" size="large" color={colors.black} />
         ) : (
           <View style={{ flex: 1 }}>
             <ProfessionalScheduleTemplateForm
@@ -97,7 +97,7 @@ const ProfessionalScheduleScreen = () => {
                     Weeks
                   </Text>
                   <Button variant="link" size="xs" onPress={() => addWeek()} isDisabled={isAddingWeek}>
-                    <ButtonText style={{ color: isAddingWeek ? "#9ca3af" : colors.primary }}>
+                    <ButtonText style={{ color: isAddingWeek ? colors.textMuted : colors.primary }}>
                       + Add
                     </ButtonText>
                   </Button>

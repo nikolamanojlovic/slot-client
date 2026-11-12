@@ -11,6 +11,7 @@ import { useDebounce } from "@/src/hooks/useDebounce";
 import { Spinner } from "@/components/ui/spinner";
 import ExplorePreview from "../components/molecules/previews/ExplorePreview";
 import { ScrollView } from "react-native";
+import { colors } from "@/src/constants/colors";
 
 const ExploreScreen = () => {
   const [query, setQuery] = useState<string | undefined>(undefined);
@@ -29,7 +30,7 @@ const ExploreScreen = () => {
       <VStack className="h-full mb-3">
         <ExploreSearch query={query} setQuery={setQuery} />
         {isLoading && (
-          <Spinner className="flex-1 m-0" size="large" color="black" />
+          <Spinner className="flex-1 m-0" size="large" color={colors.black} />
         )}
         <ScrollView className="flex-1 pt-1 pb-3">
           {data?.items &&

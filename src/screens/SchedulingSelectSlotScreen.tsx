@@ -41,10 +41,10 @@ const SchedulingSelectSlotScreen = () => {
       <View className="flex-1">
         <View className="flex-1">
           {isLoading ? (
-            <Spinner size="large" color="black" className="mt-8" />
+            <Spinner size="large" color={colors.black} className="mt-8" />
           ) : !slots || slots.length === 0 ? (
             <View className="flex-1 items-center justify-center">
-              <Text style={{ color: "#888", fontSize: 15 }}>
+              <Text style={{ color: colors.textMuted, fontSize: 15 }}>
                 No available slots for this day
               </Text>
             </View>
@@ -71,7 +71,7 @@ const SchedulingSelectSlotScreen = () => {
                       },
                       isSelected
                         ? { backgroundColor: colors.primary }
-                        : { backgroundColor: colors.white, ...cardStyle },
+                        : cardStyle,
                     ]}
                   >
                     <Text
@@ -94,7 +94,7 @@ const SchedulingSelectSlotScreen = () => {
           onPress={handleContinue}
           isDisabled={!selectedSlot}
           className="mb-4"
-          style={{ backgroundColor: selectedSlot ? colors.primary : "#ccc" }}
+          style={{ backgroundColor: selectedSlot ? colors.primary : colors.disabled }}
         >
           <ButtonText style={{ color: colors.white }}>Continue</ButtonText>
         </Button>

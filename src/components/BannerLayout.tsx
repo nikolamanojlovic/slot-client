@@ -37,7 +37,7 @@ const BannerLayout = ({ bannerUri, bannerAlt = "", children }: Props) => {
               width: 32,
               height: 32,
               borderRadius: 16,
-              backgroundColor: "#ffffff",
+              backgroundColor: colors.white,
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -48,7 +48,7 @@ const BannerLayout = ({ bannerUri, bannerAlt = "", children }: Props) => {
         <View
           className="flex-1 pr-3 pl-3"
           style={{
-            shadowColor: "#000",
+            shadowColor: colors.black,
             shadowOffset: { width: 0, height: -4 },
             shadowOpacity: 0.15,
             shadowRadius: 8,

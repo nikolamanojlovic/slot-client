@@ -90,7 +90,7 @@ export const SignInForm = () => {
         </Box>
       </FormControl>
       {!!signInError && (
-        <Text className="text-error-600 text-sm mb-3">
+        <Text className="text-sm mb-3" style={{ color: colors.error }}>
           {(signInError as any)?.message ?? "Sign in failed. Please try again."}
         </Text>
       )}

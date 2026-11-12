@@ -14,10 +14,19 @@ export interface BookingResponse {
   professionalExternalId: string;
   clientExternalId: string | null;
   expertiseExternalId: string;
+  // Null on bookings made before scheduling-service stored it
+  expertiseName: string | null;
   date: string;
   startTime: string;
   endTime: string;
-  status: "PENDING" | "CONFIRMED" | "CANCELLED";
+  status:
+    | "PENDING"
+    | "CONFIRMED"
+    | "DECLINED"
+    | "CANCELLED"
+    | "NEEDS_RESCHEDULING"
+    | "NO_SHOW";
+  declineReason: string | null;
 }
 
 export const createBooking = async (body: CreateBookingRequest): Promise<string> => {
@@ -27,5 +36,22 @@ export const createBooking = async (body: CreateBookingRequest): Promise<string>
 
 export const getBooking = async (id: string): Promise<BookingResponse> => {
   const { data } = await api.get<BookingResponse>(`/bookings/${id}`);
+  return data;
+};
+
+// Only the booked professional; 409 booking.status.invalid once already answered
+export const confirmBooking = async (id: string): Promise<BookingResponse> => {
+  const { data } = await api.post<BookingResponse>(`/bookings/${id}/confirm`);
+  return data;
+};
+
+export const declineBooking = async (
+  id: string,
+  reason?: string,
+): Promise<BookingResponse> => {
+  const { data } = await api.post<BookingResponse>(
+    `/bookings/${id}/decline`,
+    reason ? { reason } : undefined,
+  );
   return data;
 };

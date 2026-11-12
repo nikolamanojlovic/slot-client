@@ -187,20 +187,18 @@ const ProfessionalEditExpertiseForm = ({
         </FormControlLabel>
         <Pressable
           onPress={() => setShowSuperSheet(true)}
-          className="border border-background-300 rounded h-10 px-3 flex-row items-center justify-between bg-white"
+          className="border rounded h-10 px-3 flex-row items-center justify-between"
+          style={{ borderColor: colors.borderStrong, backgroundColor: colors.surface }}
         >
           <Text
-            className={
-              selectedSuperCategoryId
-                ? "text-typography-900 flex-1 mr-2"
-                : "text-typography-500 flex-1 mr-2"
-            }
+            className="flex-1 mr-2"
+            style={{ color: selectedSuperCategoryId ? colors.text : colors.textMuted }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {selectedSuper?.name ?? "Select category"}
           </Text>
-          <Icon as={ChevronDown} size="sm" className="text-background-500" />
+          <Icon as={ChevronDown} size="sm" color={colors.textMuted} />
         </Pressable>
       </FormControl>
 
@@ -215,22 +213,20 @@ const ProfessionalEditExpertiseForm = ({
         </FormControlLabel>
         <Pressable
           onPress={() => selectedSuperCategoryId && setShowSubSheet(true)}
-          className={`border border-background-300 rounded h-10 px-3 flex-row items-center justify-between bg-white ${
+          className={`border rounded h-10 px-3 flex-row items-center justify-between ${
             !selectedSuperCategoryId ? "opacity-40" : ""
           }`}
+          style={{ borderColor: colors.borderStrong, backgroundColor: colors.surface }}
         >
           <Text
-            className={
-              selectedCategories.length > 0
-                ? "text-typography-900 flex-1 mr-2"
-                : "text-typography-500 flex-1 mr-2"
-            }
+            className="flex-1 mr-2"
+            style={{ color: selectedCategories.length > 0 ? colors.text : colors.textMuted }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {subLabel}
           </Text>
-          <Icon as={ChevronDown} size="sm" className="text-background-500" />
+          <Icon as={ChevronDown} size="sm" color={colors.textMuted} />
         </Pressable>
       </FormControl>
 
@@ -299,9 +295,9 @@ const ProfessionalEditExpertiseForm = ({
         isDisabled={mutation.isPending}
       >
         {mutation.isPending ? (
-          <Spinner size="small" color="white" />
+          <Spinner size="small" color={colors.white} />
         ) : (
-          <ButtonText className="text-white">Save</ButtonText>
+          <ButtonText style={{ color: colors.white }}>Save</ButtonText>
         )}
       </Button>
 
@@ -309,7 +305,7 @@ const ProfessionalEditExpertiseForm = ({
         <Button
           className="flex-1"
           onPress={() => mutation.mutate({ expertiseId: expertise.id, active: !expertise.active })}
-          style={{ backgroundColor: "#4B5563" }}
+          style={{ backgroundColor: colors.neutral }}
           isDisabled={mutation.isPending}
         >
           <ButtonText>{expertise.active ? "Deactivate" : "Activate"}</ButtonText>
@@ -321,9 +317,9 @@ const ProfessionalEditExpertiseForm = ({
           isDisabled={deleteMutation.isPending}
         >
           {deleteMutation.isPending ? (
-            <Spinner size="small" color="white" />
+            <Spinner size="small" color={colors.white} />
           ) : (
-            <ButtonText className="text-white">Delete</ButtonText>
+            <ButtonText style={{ color: colors.white }}>Delete</ButtonText>
           )}
         </Button>
       </HStack>
@@ -351,7 +347,7 @@ const ProfessionalEditExpertiseForm = ({
                 {sc.name}
               </ActionsheetItemText>
               {selectedSuperCategoryId === sc.id && (
-                <Icon as={Check} size="sm" className="text-black" />
+                <Icon as={Check} size="sm" color={colors.black} />
               )}
             </ActionsheetItem>
           ))}
@@ -378,7 +374,7 @@ const ProfessionalEditExpertiseForm = ({
                   {cat.name}
                 </ActionsheetItemText>
                 {isSelected && (
-                  <Icon as={Check} size="sm" className="text-black" />
+                  <Icon as={Check} size="sm" color={colors.black} />
                 )}
               </ActionsheetItem>
             );

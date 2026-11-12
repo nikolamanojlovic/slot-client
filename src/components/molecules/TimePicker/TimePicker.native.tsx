@@ -16,7 +16,7 @@ export const TimePicker = ({ value, onChange, disabled }: TimePickerProps) => {
   return (
     <>
       <Pressable disabled={disabled} onPress={() => setVisible(true)}>
-        <Text style={{ color: disabled ? "#aaa" : colors.black }}>
+        <Text style={{ color: disabled ? colors.textMuted : colors.black }}>
           {value ? value.toTimeString().slice(0, 5) : ""}
         </Text>
       </Pressable>

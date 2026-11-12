@@ -23,7 +23,7 @@ const TenantExpertiseItem = ({ expertise, onPress }: Props) => (
         <Text className="font-bold" style={{ color: colors.primary }}>
           {expertise.name}
         </Text>
-        <Text size="sm" className="text-typography-500">
+        <Text size="sm" style={{ color: colors.textMuted }}>
           {`${expertise.capacity} ${expertise.capacity === 1 ? "person" : "people"}, ${expertise.duration} min`}
         </Text>
       </VStack>

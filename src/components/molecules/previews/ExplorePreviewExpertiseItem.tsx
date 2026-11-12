@@ -17,7 +17,7 @@ const ExplorePreviewExpertiseItem = ({ expertise, isLast }: Props) => (
         <Text size="xs" bold>
           {expertise.name}
         </Text>
-        <Text size="xs" className="text-typography-500">
+        <Text size="xs" style={{ color: colors.textMuted }}>
           {`${expertise.duration} min | ${expertise.capacity} ppl`}
         </Text>
       </VStack>
