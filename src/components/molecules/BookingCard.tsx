@@ -3,22 +3,24 @@ import { CalendarClock, CalendarDays, Check, Clock, X } from "lucide-react-nativ
 import { Text } from "@/components/ui/text";
 import { HStack } from "@/components/ui/hstack";
 import { Button, ButtonText } from "@/components/ui/button";
-import type { BookingData, BookingStatus } from "@/src/api/messages";
+import type { BookingData, BookingFlowState } from "@/src/api/messages";
 import { formatDayMonth, parseDateISO } from "@/src/utils/date";
 import { formatTimeRange } from "@/src/utils/schedule";
 import { bookingMessageParts, type BookingViewer } from "@/src/utils/bookingMessage";
 import { cardStyle } from "@/src/constants/styles";
 import { colors } from "@/src/constants/colors";
 
-const STATUS_TITLE: Record<BookingStatus, string> = {
+const STATUS_TITLE: Record<BookingFlowState, string> = {
   REQUESTED: "Booking requested",
   CONFIRMED: "Booking confirmed",
-  DECLINED: "Booking rejected",
+  DECLINED: "Booking declined",
+  CANCELLED: "Booking cancelled",
+  RESCHEDULED: "Booking rescheduled",
 };
 
-// Shown instead of the action buttons; only a declined booking has one
-const STATUS_BADGE: Partial<Record<BookingStatus, { label: string; color: string }>> = {
-  DECLINED: { label: "Declined", color: colors.error },
+// Shown instead of the action buttons; only a cancelled booking has one
+const STATUS_BADGE: Partial<Record<BookingFlowState, { label: string; color: string }>> = {
+  CANCELLED: { label: "Cancelled", color: colors.error },
 };
 
 export interface BookingCardActions {
@@ -29,8 +31,17 @@ export interface BookingCardActions {
   disabled: boolean;
 }
 
+export interface BookingCardConfirmedActions {
+  onReschedule: () => void;
+  onCancel: () => void;
+  // A request in flight
+  disabled: boolean;
+}
+
 interface Props {
   data: BookingData;
+  // The message's plain-text fallback, shown for a flow state this client doesn't know
+  content: string;
   // Who is reading: decides the sentence ("You confirmed …" / "… confirmed your booking")
   viewer: BookingViewer;
   // An older card of a booking that has a newer one: faded, no badge
@@ -38,13 +49,11 @@ interface Props {
   // The professional's Confirm/Decline: active on the newest request,
   // disabled on an older one
   actions?: BookingCardActions;
-  // The Reschedule button on the newest confirmed card. No reschedule
-  // endpoint yet, so it does nothing until onReschedule is passed.
-  showReschedule?: boolean;
-  onReschedule?: () => void;
+  // The professional's Reschedule/Cancel on the newest confirmed or rescheduled card
+  confirmedActions?: BookingCardConfirmedActions;
 }
 
-const StatusBadge = ({ status }: { status: BookingStatus }) => {
+const StatusBadge = ({ status }: { status: BookingFlowState }) => {
   const badge = STATUS_BADGE[status];
   if (!badge) return null;
   return (
@@ -64,22 +73,47 @@ const StatusBadge = ({ status }: { status: BookingStatus }) => {
   );
 };
 
-const When = ({ data }: { data: BookingData }) => (
-  <HStack space="md" className="items-center">
-    <HStack space="xs" className="items-center">
-      <CalendarDays size={14} color={colors.textMuted} />
-      <Text size="sm" style={{ color: colors.textSecondary }}>
-        {formatDayMonth(parseDateISO(data.date))}
-      </Text>
+interface WhenProps {
+  date: string;
+  startTime: string;
+  endTime: string;
+  // The old time of a rescheduled booking: muted and struck through
+  struck?: boolean;
+}
+
+const When = ({ date, startTime, endTime, struck = false }: WhenProps) => {
+  const textColor = struck ? colors.textMuted : colors.textSecondary;
+  const textClass = struck ? "line-through" : undefined;
+  return (
+    <HStack space="md" className="items-center">
+      <HStack space="xs" className="items-center">
+        <CalendarDays size={14} color={colors.textMuted} />
+        <Text size="sm" className={textClass} style={{ color: textColor }}>
+          {formatDayMonth(parseDateISO(date))}
+        </Text>
+      </HStack>
+      <HStack space="xs" className="items-center">
+        <Clock size={14} color={colors.textMuted} />
+        <Text size="sm" className={textClass} style={{ color: textColor }}>
+          {formatTimeRange(startTime, endTime)}
+        </Text>
+      </HStack>
     </HStack>
-    <HStack space="xs" className="items-center">
-      <Clock size={14} color={colors.textMuted} />
-      <Text size="sm" style={{ color: colors.textSecondary }}>
-        {formatTimeRange(data.startTime, data.endTime)}
-      </Text>
-    </HStack>
-  </HStack>
-);
+  );
+};
+
+// The old time of a rescheduled booking, struck through above the new one
+const PreviousWhen = ({ data }: { data: BookingData }) => {
+  if (!data.previousDate || !data.previousStartTime || !data.previousEndTime) return null;
+  return (
+    <When
+      date={data.previousDate}
+      startTime={data.previousStartTime}
+      endTime={data.previousEndTime}
+      struck
+    />
+  );
+};
 
 const Bold = ({ children }: { children: string }) => (
   <Text size="sm" className="font-semibold" style={{ color: colors.text }}>
@@ -91,11 +125,11 @@ const Bold = ({ children }: { children: string }) => (
 // drops RN-only style props like shadow*
 const BookingCard = ({
   data,
+  content,
   viewer,
   faded = false,
   actions,
-  showReschedule = false,
-  onReschedule,
+  confirmedActions,
 }: Props) => {
   const title = STATUS_TITLE[data.status] ?? "Booking";
   const parts = bookingMessageParts(data, viewer);
@@ -119,25 +153,38 @@ const BookingCard = ({
           ? parts.map((part, i) =>
               part.bold ? <Bold key={i}>{part.text}</Bold> : part.text,
             )
-          : (data.expertiseName ?? "Booking")}
+          : content}
       </Text>
-      <When data={data} />
-      {data.status === "DECLINED" && !!data.reason && (
+      {data.status === "RESCHEDULED" && <PreviousWhen data={data} />}
+      <When date={data.date} startTime={data.startTime} endTime={data.endTime} />
+      {!!data.reason && (
         <Text size="sm" className="italic" style={{ color: colors.textSecondary }}>
           {data.reason}
         </Text>
       )}
-      {showReschedule ? (
-        // Same button height as Confirm/Decline
-        <Button
-          size="sm"
-          className="mt-2"
-          style={{ backgroundColor: colors.warning, gap: 6 }}
-          onPress={onReschedule}
-        >
-          <CalendarClock size={18} color={colors.white} />
-          <ButtonText style={{ color: colors.white }}>Reschedule</ButtonText>
-        </Button>
+      {confirmedActions ? (
+        // Same layout as Confirm/Decline
+        <HStack space="sm" className="mt-2">
+          <Button
+            size="sm"
+            className="flex-1"
+            isDisabled={confirmedActions.disabled}
+            style={{ backgroundColor: colors.warning, gap: 6 }}
+            onPress={confirmedActions.onReschedule}
+          >
+            <CalendarClock size={18} color={colors.white} />
+            <ButtonText style={{ color: colors.white }}>Reschedule</ButtonText>
+          </Button>
+          <Button
+            size="sm"
+            accessibilityLabel="Cancel booking"
+            isDisabled={confirmedActions.disabled}
+            style={{ backgroundColor: colors.error, width: 44, paddingHorizontal: 0 }}
+            onPress={confirmedActions.onCancel}
+          >
+            <X size={18} color={colors.white} />
+          </Button>
+        </HStack>
       ) : actions ? (
         <HStack space="sm" className="mt-2">
           <Button

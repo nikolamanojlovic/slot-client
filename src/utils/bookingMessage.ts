@@ -18,7 +18,7 @@ const t = (text: string): TextPart => ({ text });
 // A BOOKING message as a sentence for whoever is reading it. Built here rather
 // than stored, because the wording depends on the reader and names come from
 // user-service at read time. Who acted follows from the status: the client
-// requests, the professional confirms or declines. No date, time or decline
+// requests, the professional confirms, declines, cancels or reschedules. No date, time or
 // reason: the booking card shows those on their own lines. Returns null for a
 // status this client doesn't know.
 export const bookingMessageParts = (
@@ -37,6 +37,10 @@ export const bookingMessageParts = (
         return [t("You confirmed "), name, t("'s booking"), ...forWhat, t(".")];
       case "DECLINED":
         return [t("You declined "), name, t("'s booking"), ...forWhat, t(".")];
+      case "CANCELLED":
+        return [t("You cancelled "), name, t("'s booking"), ...forWhat, t(".")];
+      case "RESCHEDULED":
+        return [t("You moved "), name, t("'s booking"), ...forWhat, t(".")];
     }
   }
 
@@ -55,17 +59,21 @@ export const bookingMessageParts = (
       return [name, t(" confirmed your booking"), ...forWhat, t(".")];
     case "DECLINED":
       return [name, t(" declined your booking"), ...forWhat, t(".")];
+    case "CANCELLED":
+      return [name, t(" cancelled your booking"), ...forWhat, t(".")];
+    case "RESCHEDULED":
+      return [name, t(" moved your booking"), ...forWhat, t(".")];
   }
   return null;
 };
 
-// Plain-text version with the decline reason, e.g. the inbox preview
+// Plain-text version with the decline/cancel reason, e.g. the inbox preview
 export const bookingMessageText = (
   data: BookingData,
   viewer: BookingViewer,
 ): string | null => {
   const parts = bookingMessageParts(data, viewer);
   if (!parts) return null;
-  const reason = data.status === "DECLINED" && data.reason ? ` Reason: ${data.reason}` : "";
+  const reason = data.reason ? ` Reason: ${data.reason}` : "";
   return parts.map((p) => p.text).join("") + reason;
 };

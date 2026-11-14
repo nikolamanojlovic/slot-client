@@ -2,6 +2,7 @@ import React from "react";
 import BasicLayout from "../components/BasicLayout";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
+import TodayBookings from "@/src/components/molecules/TodayBookings";
 import AISchedulingFab from "@/src/components/molecules/AISchedulingFab";
 import { useUserStore } from "@/src/stores/useUserStore";
 import { UserRole } from "@/src/types/api/user/user.enum";
@@ -20,6 +21,7 @@ const HomeScreen = () => {
       >
           {user ? "👋 Hi, " + user.firstName + "!" : "👋 Hi!"}
         </Heading>
+        <TodayBookings />
       </VStack>
       {user?.role !== UserRole.PROFESSIONAL && <AISchedulingFab className="mb-2" />}
     </BasicLayout>

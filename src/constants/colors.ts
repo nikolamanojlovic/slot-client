@@ -155,6 +155,9 @@ export const colors = {
   error: palette["error-600"],
   warning: palette["warning-700"],
   rating: "#F59E0B",
+  // Booking blocks on the home screen's day timeline
+  bookingConfirmedBg: palette["primary-0"],
+  bookingPendingBg: palette["background-100"],
   // Screen background (react-navigation's theme uses it too), and the same
   // colour fully transparent, for the fade under the screen header
   screen: "#F2F2F2",

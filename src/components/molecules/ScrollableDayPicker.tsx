@@ -13,6 +13,7 @@ import {
   SelectDragIndicatorWrapper,
   SelectItem,
 } from "@/components/ui/select";
+import { Input, InputField } from "@/components/ui/input";
 import { ChevronDown } from "lucide-react-native";
 import { cardStyle } from "@/src/constants/styles";
 import { colors } from "@/src/constants/colors";
@@ -21,7 +22,6 @@ import {
   DAY_LABELS,
   MONTH_SHORT_LABELS,
   MONTHS,
-  CURRENT_YEAR,
 } from "@/src/utils/date";
 
 interface Props {
@@ -59,10 +59,16 @@ const ScrollableDayPicker = ({
 }: Props) => {
   const today = new Date();
   const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
 
+  // All 12 months, starting with the current one, e.g. Nov … Oct. Months
+  // before the current one fall in next year, so the month alone picks the year.
   const availableMonths = useMemo(
     () =>
-      MONTHS.slice(currentMonth).map((name) => ({ label: name, value: name })),
+      Array.from({ length: 12 }, (_, i) => {
+        const m = (currentMonth + i) % 12;
+        return { label: MONTHS[m], value: String(m) };
+      }),
     [currentMonth],
   );
 
@@ -71,32 +77,40 @@ const ScrollableDayPicker = ({
 
   return (
     <View>
-      <Select
-        selectedValue={MONTHS[month]}
-        onValueChange={(val) =>
-          onMonthChange(MONTHS.indexOf(val), CURRENT_YEAR)
-        }
-      >
-        <SelectTrigger variant="outline" size="md">
-          <SelectInput
-            placeholder="Month"
-            className="font-semibold"
-            style={{ color: colors.primary }}
-          />
-          <SelectIcon className="mr-3" as={ChevronDown} />
-        </SelectTrigger>
-        <SelectPortal>
-          <SelectBackdrop />
-          <SelectContent>
-            <SelectDragIndicatorWrapper>
-              <SelectDragIndicator />
-            </SelectDragIndicatorWrapper>
-            {availableMonths.map((m) => (
-              <SelectItem key={m.value} label={m.label} value={m.value} />
-            ))}
-          </SelectContent>
-        </SelectPortal>
-      </Select>
+      <View className="flex-row gap-2">
+        <Select
+          className="flex-1"
+          selectedValue={String(month)}
+          initialLabel={MONTHS[month]}
+          onValueChange={(val) => {
+            const m = Number(val);
+            onMonthChange(m, m < currentMonth ? currentYear + 1 : currentYear);
+          }}
+        >
+          <SelectTrigger variant="outline" size="md">
+            <SelectInput
+              placeholder="Month"
+              className="font-semibold"
+              style={{ color: colors.primary }}
+            />
+            <SelectIcon className="mr-3" as={ChevronDown} />
+          </SelectTrigger>
+          <SelectPortal>
+            <SelectBackdrop />
+            <SelectContent>
+              <SelectDragIndicatorWrapper>
+                <SelectDragIndicator />
+              </SelectDragIndicatorWrapper>
+              {availableMonths.map((m) => (
+                <SelectItem key={m.value} label={m.label} value={m.value} />
+              ))}
+            </SelectContent>
+          </SelectPortal>
+        </Select>
+        <Input size="md" isDisabled className="w-24">
+          <InputField value={String(year)} editable={false} />
+        </Input>
+      </View>
 
       <ScrollView
         horizontal

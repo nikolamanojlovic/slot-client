@@ -5,19 +5,30 @@ export type ThreadType = "CONVERSATION";
 // Who sent it; SYSTEM messages have no senderExternalId
 export type SenderType = "USER" | "SYSTEM";
 
-// Will grow (RESCHEDULED, CANCELLED, …)
-export type BookingStatus = "REQUESTED" | "CONFIRMED" | "DECLINED";
+// Where a booking is in its flow, as the chat shows it (data.status); the
+// newest card is current. Not BookingState: REQUESTED is PENDING there, and
+// RESCHEDULED is still CONFIRMED
+export type BookingFlowState =
+  | "REQUESTED"
+  | "CONFIRMED"
+  | "DECLINED"
+  | "CANCELLED"
+  | "RESCHEDULED";
 
 // Snapshot of the booking when the message was created, not its live state
 export interface BookingData {
-  status: BookingStatus;
+  status: BookingFlowState;
   // Null on bookings made before the name was stored
   expertiseName: string | null;
   date: string; // yyyy-MM-dd
   startTime: string; // HH:mm
   endTime: string; // HH:mm
-  // Only on DECLINED, and optional there
+  // On DECLINED (optional), CANCELLED (required) and RESCHEDULED (optional)
   reason?: string | null;
+  // Only on RESCHEDULED: the time it was moved from
+  previousDate?: string | null;
+  previousStartTime?: string | null;
+  previousEndTime?: string | null;
 }
 
 interface MessageBase {
@@ -54,6 +65,9 @@ export interface MessageThreadResponse {
   lastMessage: LastMessage | null;
   otherParticipant: Participant;
   unreadCount: number;
+  // Only from getBookingThreads, where each row is one booking (a conversation
+  // can appear once per booking): that booking's newest card
+  message?: Message | null;
 }
 
 export interface UnreadCountResponse {
@@ -77,6 +91,21 @@ export const getThreads = async (
 ): Promise<Page<MessageThreadResponse>> => {
   const { data } = await api.get<Page<MessageThreadResponse>>("/threads", {
     params: { type, page, size },
+  });
+  return data;
+};
+
+// Conversations with a booking in one of these flow states, e.g.
+// ["REQUESTED"] = requests waiting for the professional's answer,
+// ["CONFIRMED", "RESCHEDULED"] = upcoming. None = any booking. Both roles.
+export const getBookingThreads = async (
+  state?: BookingFlowState[],
+  page = 0,
+  size = 10,
+): Promise<Page<MessageThreadResponse>> => {
+  const { data } = await api.get<Page<MessageThreadResponse>>("/threads/bookings", {
+    // Comma-joined: Spring doesn't bind axios' default state[]=… form
+    params: { state: state?.join(","), page, size },
   });
   return data;
 };

@@ -20,6 +20,12 @@ const handleFrame = (frame: RealtimeFrame) => {
   switch (frame.type) {
     case "message.created": {
       addMessageToCache(frame.threadId, frame.message);
+      // A booking card changes what the Requests and Other tabs list
+      if (frame.message.type === "BOOKING") {
+        queryClient.invalidateQueries({ queryKey: ["threads", "requests"] });
+        queryClient.invalidateQueries({ queryKey: ["threads", "other"] });
+        queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      }
       const isMine =
         frame.message.senderExternalId ===
         useUserStore.getState().user?.externalId;
@@ -40,6 +46,7 @@ const handleFrame = (frame: RealtimeFrame) => {
       queryClient.invalidateQueries({ queryKey: ["threads"] });
       queryClient.invalidateQueries({ queryKey: ["messages"] });
       queryClient.invalidateQueries({ queryKey: ["unread-count"] });
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
       break;
   }
 };

@@ -15,14 +15,18 @@ import { Text } from "@/components/ui/text";
 import { Spinner } from "@/components/ui/spinner";
 import { HStack } from "@/components/ui/hstack";
 import { Input, InputField } from "@/components/ui/input";
-import { BookingData, BookingStatus, Message } from "@/src/api/messages";
+import { BookingData, Message } from "@/src/api/messages";
 import { BookingResponse } from "@/src/api/bookings";
 import {
-  toMessageBookingStatus,
+  toBookingFlowState,
+  useCancelBooking,
   useConfirmBooking,
   useDeclineBooking,
 } from "@/src/queries/useBookings";
-import DeclineBookingSheet from "@/src/components/molecules/sheets/DeclineBookingSheet";
+import BookingReasonModal, {
+  type BookingReasonMode,
+} from "@/src/components/molecules/BookingReasonModal";
+import RescheduleBookingDrawer from "@/src/components/molecules/RescheduleBookingDrawer";
 import { queryClient } from "@/src/lib/query";
 import type { AxiosError } from "axios";
 import type { ErrorResponse } from "@/src/types/common/error.interface";
@@ -114,6 +118,18 @@ const MessageItem = ({ item, isOwn }: { item: Message; isOwn: boolean }) => {
   );
 };
 
+// bookingId → id of its newest BOOKING message. Messages are newest-first, so
+// the first one seen wins.
+const latestBookingIds = (messages: Message[]) => {
+  const latest = new Map<string, string>();
+  for (const m of messages) {
+    if (m.type === "BOOKING" && m.data && m.bookingId && !latest.has(m.bookingId)) {
+      latest.set(m.bookingId, m.id);
+    }
+  }
+  return latest;
+};
+
 const ThreadScreen = ({ route }: Props) => {
   const { threadId } = route.params;
   const thread = useThread(threadId);
@@ -129,12 +145,31 @@ const ThreadScreen = ({ route }: Props) => {
   const { mutate: markRead } = useMarkThreadRead(threadId);
   const { mutate: confirmBooking, isPending: isConfirming } = useConfirmBooking();
   const { mutate: declineBooking, isPending: isDeclining } = useDeclineBooking();
-  const [decliningBookingId, setDecliningBookingId] = useState<string | null>(null);
-  // Status from the confirm/decline response, shown until the matching
-  // BOOKING message arrives over the socket (outbox/inbox crons take ~1–2 min)
+  const { mutate: cancelBooking, isPending: isCancelling } = useCancelBooking();
+  const isAnswering = isConfirming || isDeclining || isCancelling;
+  // The booking whose reason popup is open: declining a request or cancelling a confirmed one
+  const [reasonModal, setReasonModal] = useState<{
+    bookingId: string;
+    basedOnMessageId: string;
+    mode: BookingReasonMode;
+  } | null>(null);
+  // The confirmed booking whose reschedule drawer is open
+  const [rescheduling, setRescheduling] = useState<{
+    bookingId: string;
+    basedOnMessageId: string;
+  } | null>(null);
+  // What a confirm/decline/cancel/reschedule response changed, shown until the
+  // matching BOOKING message arrives over the socket (outbox/inbox crons take
+  // ~1–2 min). Only applies while the card it was based on is still the
+  // newest, so any newer real message wins. A reschedule is shown as a new
+  // card (asNewCard), like the real one; the others change the card in place.
   const [optimisticBookings, setOptimisticBookings] = useState<
-    Record<string, { status: BookingStatus; reason: string | null }>
+    Record<
+      string,
+      { basedOnMessageId: string; data: Partial<BookingData>; asNewCard?: boolean }
+    >
   >({});
+
   const setFocusedThreadId = useChatStore((s) => s.setFocusedThreadId);
 
   // While on screen: mark read on focus and on every incoming message;
@@ -169,30 +204,49 @@ const ThreadScreen = ({ route }: Props) => {
     );
   }, [data]);
 
-  // bookingId → id of its newest BOOKING message. Messages are newest-first, so
-  // the first one seen wins; new socket messages land in the cache and re-run this.
-  const latestBookingMessageIds = useMemo(() => {
-    const latest = new Map<string, string>();
-    for (const m of messages) {
-      if (m.type === "BOOKING" && m.data && m.bookingId && !latest.has(m.bookingId)) {
-        latest.set(m.bookingId, m.id);
-      }
-    }
-    return latest;
-  }, [messages]);
+  // The real messages plus a rescheduled booking's new card, newest, until the
+  // real card arrives
+  const displayMessages = useMemo(() => {
+    const latestReal = latestBookingIds(messages);
+    const added = Object.entries(optimisticBookings).flatMap(([bookingId, pending]) => {
+      if (!pending.asNewCard || latestReal.get(bookingId) !== pending.basedOnMessageId) return [];
+      const base = messages.find((m) => m.id === pending.basedOnMessageId);
+      if (base?.type !== "BOOKING" || !base.data) return [];
+      return [{
+        ...base,
+        id: `optimistic-${bookingId}`,
+        createdAt: new Date().toISOString(),
+        data: { ...base.data, ...pending.data },
+      }];
+    });
+    return [...added, ...messages];
+  }, [messages, optimisticBookings]);
+
+  const latestBookingMessageIds = useMemo(
+    () => latestBookingIds(displayMessages),
+    [displayMessages],
+  );
 
   const clearOptimistic = (bookingId: string) =>
     setOptimisticBookings(({ [bookingId]: _, ...rest }) => rest);
 
-  const bookingCallbacks = (bookingId: string) => ({
+  const bookingCallbacks = (bookingId: string, basedOnMessageId: string) => ({
     onSuccess: (booking: BookingResponse) => {
-      const status = toMessageBookingStatus(booking.status);
+      const status = toBookingFlowState(booking.status);
       if (status) {
         setOptimisticBookings((prev) => ({
           ...prev,
-          [bookingId]: { status, reason: booking.declineReason },
+          [bookingId]: {
+            basedOnMessageId,
+            data: {
+              status,
+              reason: status === "CANCELLED" ? booking.cancelReason : booking.declineReason,
+            },
+          },
         }));
       }
+      // Leaves the Requests list once its next card arrives
+      queryClient.invalidateQueries({ queryKey: ["threads"] });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       // Already answered elsewhere: show the real state
@@ -201,8 +255,8 @@ const ThreadScreen = ({ route }: Props) => {
         queryClient.invalidateQueries({ queryKey: ["messages", threadId] });
       }
       showError(error, {
-        "booking.status.invalid": "This booking was already answered.",
-        "booking.forbidden": "Only the booked professional can answer this booking.",
+        "booking.status.invalid": "This booking has already changed.",
+        "booking.forbidden": "Only the booked professional can do this.",
         "booking.not.found": "This booking no longer exists.",
       });
     },
@@ -213,33 +267,48 @@ const ThreadScreen = ({ route }: Props) => {
   ) => {
     const bookingId = item.bookingId;
     const isLatest = latestBookingMessageIds.get(bookingId) === item.id;
-    const optimistic =
-      isLatest && item.data.status === "REQUESTED"
-        ? optimisticBookings[bookingId]
-        : undefined;
-    const data = optimistic ? { ...item.data, ...optimistic } : item.data;
+    const pending = optimisticBookings[bookingId];
+    const data: BookingData =
+      isLatest && !pending?.asNewCard && pending?.basedOnMessageId === item.id
+        ? { ...item.data, ...pending.data }
+        : item.data;
+    // Actions on the shown-early reschedule card are based on the real card
+    // it was made from; the server doesn't know the early one
+    const basedOnMessageId =
+      pending?.asNewCard && item.id === `optimistic-${bookingId}`
+        ? pending.basedOnMessageId
+        : item.id;
     // Older cards of the booking are faded. The professional keeps Confirm/
-    // Decline on every request card (disabled once a newer card exists) and on
-    // the newest declined one; both sides get Reschedule once it's confirmed.
-    const showAnswerButtons =
-      isProfessional &&
-      data.status !== "CONFIRMED" &&
-      (isLatest || data.status === "REQUESTED");
+    // Decline on every request card (disabled once a newer card exists) and
+    // gets Reschedule/Cancel while it's confirmed (also after a reschedule).
+    // A declined or cancelled booking is final: no buttons.
+    const showAnswerButtons = isProfessional && data.status === "REQUESTED";
     const actions = showAnswerButtons
       ? {
-          disabled: !isLatest || isConfirming || isDeclining,
-          onConfirm: () => confirmBooking(bookingId, bookingCallbacks(bookingId)),
-          onDecline: () => setDecliningBookingId(bookingId),
+          disabled: !isLatest || isAnswering,
+          onConfirm: () => confirmBooking(bookingId, bookingCallbacks(bookingId, basedOnMessageId)),
+          onDecline: () =>
+            setReasonModal({ bookingId, basedOnMessageId, mode: "decline" }),
         }
       : undefined;
+    const confirmedActions =
+      isProfessional && isLatest && (data.status === "CONFIRMED" || data.status === "RESCHEDULED")
+        ? {
+            disabled: isAnswering,
+            onReschedule: () => setRescheduling({ bookingId, basedOnMessageId }),
+            onCancel: () =>
+              setReasonModal({ bookingId, basedOnMessageId, mode: "cancel" }),
+          }
+        : undefined;
 
     return (
       <BookingCard
         data={data}
+        content={item.content}
         viewer={{ isProfessional, otherName }}
         faded={!isLatest}
         actions={actions}
-        showReschedule={isLatest && data.status === "CONFIRMED"}
+        confirmedActions={confirmedActions}
       />
     );
   };
@@ -270,7 +339,7 @@ const ThreadScreen = ({ route }: Props) => {
         ) : (
           <FlatList
             inverted
-            data={messages}
+            data={displayMessages}
             keyExtractor={(item) => item.id}
             contentContainerStyle={{ gap: 8, paddingVertical: 12, paddingHorizontal: 4 }}
             onEndReached={() => {
@@ -346,13 +415,49 @@ const ThreadScreen = ({ route }: Props) => {
           </Pressable>
         </HStack>
       </KeyboardAvoidingView>
-      <DeclineBookingSheet
-        isOpen={decliningBookingId !== null}
-        onClose={() => setDecliningBookingId(null)}
-        onDecline={(reason) => {
-          const bookingId = decliningBookingId!;
-          setDecliningBookingId(null);
-          declineBooking({ bookingId, reason }, bookingCallbacks(bookingId));
+      <BookingReasonModal
+        mode={reasonModal?.mode ?? null}
+        onClose={() => setReasonModal(null)}
+        onSubmit={(reason) => {
+          const { bookingId, basedOnMessageId, mode } = reasonModal!;
+          setReasonModal(null);
+          const callbacks = bookingCallbacks(bookingId, basedOnMessageId);
+          if (mode === "cancel") {
+            cancelBooking({ bookingId, reason: reason! }, callbacks);
+          } else {
+            declineBooking({ bookingId, reason }, callbacks);
+          }
+        }}
+      />
+      <RescheduleBookingDrawer
+        bookingId={rescheduling?.bookingId ?? null}
+        onClose={() => setRescheduling(null)}
+        // Show the new card right away: new time, the old one struck through
+        onRescheduled={(booking, previous) => {
+          const { basedOnMessageId } = rescheduling!;
+          setRescheduling(null);
+          setOptimisticBookings((prev) => ({
+            ...prev,
+            [booking.id]: {
+              basedOnMessageId,
+              asNewCard: true,
+              data: {
+                status: "RESCHEDULED",
+                date: booking.date,
+                startTime: booking.startTime,
+                endTime: booking.endTime,
+                reason: booking.rescheduleReason,
+                previousDate: previous.date,
+                previousStartTime: previous.startTime,
+                previousEndTime: previous.endTime,
+              },
+            },
+          }));
+        }}
+        onStale={() => {
+          clearOptimistic(rescheduling!.bookingId);
+          setRescheduling(null);
+          queryClient.invalidateQueries({ queryKey: ["messages", threadId] });
         }}
       />
     </BasicNavigationLayout>
